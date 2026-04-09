@@ -99,9 +99,10 @@ end_header
   await page.goto('/runs/run-123');
   await expect(page.getByRole('heading', { name: 'Run run-123' })).toBeVisible();
   await expect(page.getByText('Status')).toBeVisible();
-  await expect(page.locator('canvas')).toBeVisible();
+  await expect(page.getByTestId('artifact-preview-name')).toHaveText('preview.png', { timeout: 15000 });
+  await expect(page.getByTestId('mesh-viewer').locator('canvas')).toBeVisible({ timeout: 15000 });
 
-  await page.getByRole('button', { name: 'Load' }).click();
+  await page.getByTestId('run-summary-load').click();
   await expect(page.getByText('Reference case')).toBeVisible();
   await expect(page.getByText('100 E 21st St Brooklyn, NY 11226')).toBeVisible();
   await expect(page.getByText('Added: 1')).toBeVisible();

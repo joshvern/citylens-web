@@ -67,7 +67,7 @@ export function RunSummaryPanel({
     stageTimings && typeof stageTimings === 'object' ? Object.entries(stageTimings).filter(([, v]) => typeof v === 'number') : [];
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white">
+    <div className="rounded-lg border border-slate-200 bg-white" data-testid="run-summary-panel">
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
         <div className="text-sm font-medium">run_summary.json</div>
         <div className="flex items-center gap-2">
@@ -84,6 +84,7 @@ export function RunSummaryPanel({
           {summaryUrl && onLoad && (
             <button
               type="button"
+              data-testid="run-summary-load"
               className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800"
               onClick={onLoad}
             >

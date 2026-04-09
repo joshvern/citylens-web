@@ -135,7 +135,7 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
   }
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white">
+    <div className="rounded-lg border border-slate-200 bg-white" data-testid="artifacts-panel">
       <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
         <div className="text-sm font-medium">Artifacts</div>
         <div className="text-xs text-slate-600">Expected: {EXPECTED.join(', ')}</div>
@@ -143,9 +143,9 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
 
       <div className="flex flex-col gap-4 p-4">
         {/* Preview */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2" data-testid="artifact-preview">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-medium">
+            <div className="flex items-center gap-2 text-sm font-medium" data-testid="artifact-preview-name">
               <ImageIcon className="h-4 w-4" /> preview.png
             </div>
             {previewUrl && (
@@ -169,9 +169,9 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
         </div>
 
         {/* GeoJSON */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2" data-testid="artifact-change">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-medium">
+            <div className="flex items-center gap-2 text-sm font-medium" data-testid="artifact-change-name">
               <FileJson className="h-4 w-4" /> change.geojson
             </div>
             {changeUrl && (
@@ -196,9 +196,9 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
 
         {/* Mesh */}
         {meshUrl ? (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" data-testid="artifact-mesh">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-medium">
+              <div className="flex items-center gap-2 text-sm font-medium" data-testid="artifact-mesh-name">
                 <Download className="h-4 w-4" /> mesh.ply
               </div>
               <a

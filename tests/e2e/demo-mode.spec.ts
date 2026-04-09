@@ -122,10 +122,10 @@ end_header
   await expect(page).toHaveURL(/\/runs\/demo-1\?demo=1/);
   await expect(page.getByRole('heading', { name: 'Run demo-1' })).toBeVisible();
   await expect(page.getByText('Demo run')).toBeVisible();
-  await expect(page.getByText('preview.png', { exact: true })).toBeVisible({ timeout: 15000 });
-  await expect(page.locator('canvas')).toBeVisible();
+  await expect(page.getByTestId('artifact-preview-name')).toHaveText('preview.png', { timeout: 15000 });
+  await expect(page.getByTestId('mesh-viewer').locator('canvas')).toBeVisible({ timeout: 15000 });
 
-  await page.getByRole('button', { name: 'Load' }).click();
+  await page.getByTestId('run-summary-load').click();
   await expect(page.getByText('Reference case')).toBeVisible();
   await expect(page.getByText('Added: 1')).toBeVisible();
   await expect(page.getByText('Removed: 1')).toBeVisible();

@@ -174,7 +174,7 @@ export function MeshViewer({ url }: { url: string }) {
   }, [error, loading, mesh, url]);
 
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white" data-testid="mesh-viewer">
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
         <div className="text-sm font-medium">mesh.ply</div>
         <a className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900" href={url} target="_blank" rel="noreferrer">
