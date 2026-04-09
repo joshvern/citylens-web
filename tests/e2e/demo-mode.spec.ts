@@ -116,10 +116,11 @@ end_header
   });
 
   await page.goto('/');
-  await expect(page.getByText('Demo Mode')).toBeVisible();
+  await expect(page.getByText(/Demo mode \(precomputed\)/i)).toBeVisible();
   await page.getByLabel('Select a featured demo run').selectOption('demo-1');
 
   await expect(page).toHaveURL(/\/runs\/demo-1\?demo=1/);
+  await expect(page.getByRole('heading', { name: 'Run demo-1' })).toBeVisible();
   await expect(page.getByText('Demo run')).toBeVisible();
   await expect(page.getByText('preview.png', { exact: true })).toBeVisible({ timeout: 15000 });
   await expect(page.locator('canvas')).toBeVisible();
