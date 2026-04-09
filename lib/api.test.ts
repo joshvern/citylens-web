@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { createRun, getRuns } from '@/lib/api';
+import { createRun, getRuns, resolveApiUrl } from '@/lib/api';
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -49,5 +49,14 @@ describe('api client', () => {
     expect(page.items).toHaveLength(1);
     expect(page.items[0]?.run_id).toBe('run-1');
     expect(page.nextCursor).toBe('cursor-2');
+  });
+
+  it('rebases API-relative URLs against NEXT_PUBLIC_CITYLENS_API_BASE', () => {
+    process.env.NEXT_PUBLIC_CITYLENS_API_BASE = 'https://api.citylens.dev';
+
+    expect(resolveApiUrl('/v1/demo/artifacts/demo-1/preview.png')).toBe(
+      'https://api.citylens.dev/v1/demo/artifacts/demo-1/preview.png',
+    );
+    expect(resolveApiUrl('https://example.test/preview.png')).toBe('https://example.test/preview.png');
   });
 });

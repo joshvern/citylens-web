@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { AlertTriangle, Download, Loader2, Move3D, TriangleAlert } from 'lucide-react';
 
 import { buildCenteredMeshGeometry, parseAsciiPly, type PlyMesh } from '@/lib/mesh';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 function OrbitControls() {
   const { camera, gl } = useThree();
@@ -59,7 +60,7 @@ function MeshScene({ mesh }: { mesh: PlyMesh }) {
   }
 
   return (
-    <div className="relative h-96 overflow-hidden rounded-b-lg bg-slate-950">
+    <div className="relative h-96 overflow-hidden rounded-b-lg bg-slate-950" data-testid="mesh-ready">
       <Canvas
         className="h-full w-full"
         camera={{ position: [0, 0, 3.2], fov: 40, near: 0.1, far: 100 }}
@@ -127,10 +128,15 @@ export function MeshViewer({ url }: { url: string }) {
     };
   }, [url]);
 
+  const status = loading ? 'Loading' : error ? 'Error' : mesh ? 'Ready' : 'Unavailable';
+
   const statusBody = useMemo(() => {
     if (loading) {
       return (
-        <div className="flex h-96 items-center justify-center border border-slate-200 bg-slate-50 px-4 text-sm text-slate-600">
+        <div
+          className="flex h-96 items-center justify-center border border-slate-200 bg-slate-50 px-4 text-sm text-slate-600"
+          data-testid="mesh-loading"
+        >
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           Loading mesh…
         </div>
@@ -139,7 +145,10 @@ export function MeshViewer({ url }: { url: string }) {
 
     if (error) {
       return (
-        <div className="rounded-b-lg border border-rose-200 bg-rose-50 px-4 py-6 text-sm text-rose-800">
+        <div
+          className="rounded-b-lg border border-rose-200 bg-rose-50 px-4 py-6 text-sm text-rose-800"
+          data-testid="mesh-error"
+        >
           <div className="flex items-center gap-2 font-medium">
             <TriangleAlert className="h-4 w-4" />
             Mesh viewer could not render this file.
@@ -148,6 +157,7 @@ export function MeshViewer({ url }: { url: string }) {
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <a
               className="inline-flex items-center gap-2 rounded-md border border-rose-200 bg-white px-3 py-2 text-sm font-medium text-rose-800 hover:bg-rose-50"
+              data-testid="mesh-download"
               href={url}
               target="_blank"
               rel="noreferrer"
@@ -163,21 +173,46 @@ export function MeshViewer({ url }: { url: string }) {
 
     if (!mesh) {
       return (
-        <div className="flex h-96 items-center justify-center border border-slate-200 bg-slate-50 px-4 text-sm text-slate-600">
+        <div
+          className="flex h-96 items-center justify-center border border-slate-200 bg-slate-50 px-4 text-sm text-slate-600"
+          data-testid="mesh-unavailable"
+        >
           <AlertTriangle className="mr-2 h-4 w-4" />
           Mesh data is unavailable.
         </div>
       );
     }
 
-    return <MeshScene mesh={mesh} />;
+    return (
+      <ErrorBoundary
+        title="mesh.ply"
+        message="The mesh viewer could not be rendered."
+        testId="mesh-boundary-error"
+      >
+        <MeshScene mesh={mesh} />
+      </ErrorBoundary>
+    );
   }, [error, loading, mesh, url]);
 
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white" data-testid="mesh-viewer">
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-        <div className="text-sm font-medium">mesh.ply</div>
-        <a className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900" href={url} target="_blank" rel="noreferrer">
+        <div className="flex items-center gap-3">
+          <div className="text-sm font-medium">mesh.ply</div>
+          <div
+            className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700"
+            data-testid="mesh-status"
+          >
+            {status}
+          </div>
+        </div>
+        <a
+          className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+          data-testid="mesh-download"
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+        >
           <Download className="h-4 w-4" />
           Download
         </a>

@@ -20,6 +20,7 @@ Demo mode (precomputed):
 - If no API key exists in localStorage, the UI enters Demo Mode.
 - Demo Mode loads featured demo runs from `GET /v1/demo/featured`.
 - Selecting a demo run loads run details from `GET /v1/demo/runs/{run_id}` and renders artifacts like normal.
+- Demo artifact URLs may be relative API proxy paths like `/v1/demo/artifacts/<run_id>/<artifact_name>`; the frontend resolves them against `NEXT_PUBLIC_CITYLENS_API_BASE`.
 
 Artifacts expected (standard filenames):
 
@@ -97,7 +98,7 @@ confusion when other CityLens repos have their own toolchains.
 
 3) View artifacts
 - The run detail page polls while `status` is `queued` or `running`
-- When the API provides `signed_url` for artifacts, the UI shows downloads and renders:
+- When the API provides artifact URLs, the UI shows downloads and renders:
   - `preview.png` inline
   - `change.geojson` on a Leaflet map when coordinates are geospatial; pixel-space GeoJSON is shown with an explicit message instead of a misleading map
   - `mesh.ply` in a react-three-fiber 3D viewer plus download link

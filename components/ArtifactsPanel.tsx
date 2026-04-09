@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { Download, FileJson, Image as ImageIcon } from 'lucide-react';
 
 import type { RunResponse, ArtifactRecord } from '@/lib/types';
+import { resolveApiUrl } from '@/lib/api';
 import { safeJsonStringify } from '@/lib/utils';
 import { PreviewImage } from '@/components/PreviewImage';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -37,7 +38,7 @@ function isExpectedArtifactName(v: string): v is ExpectedArtifactName {
 function pickUrl(a?: ArtifactRecord): string | null {
   if (!a) return null;
   const u = (a.signed_url ?? a.url) as string | undefined;
-  return u && u.trim().length > 0 ? u : null;
+  return resolveApiUrl(u);
 }
 
 function normalizeArtifacts(run?: RunResponse): Record<ExpectedArtifactName, ArtifactRecord | undefined> {
@@ -151,6 +152,7 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
             {previewUrl && (
               <a
                 className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-50"
+                data-testid="artifact-preview-download"
                 href={previewUrl}
                 target="_blank"
                 rel="noreferrer"
@@ -164,7 +166,7 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
               <PreviewImage src={previewUrl} alt="preview.png" />
             </ErrorBoundary>
           ) : (
-            <div className="text-sm text-slate-600">No signed_url available for preview.png yet.</div>
+            <div className="text-sm text-slate-600">No artifact URL available for preview.png yet.</div>
           )}
         </div>
 
@@ -177,6 +179,7 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
             {changeUrl && (
               <a
                 className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-50"
+                data-testid="artifact-change-download"
                 href={changeUrl}
                 target="_blank"
                 rel="noreferrer"
@@ -190,7 +193,7 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
               <GeojsonMap url={changeUrl} />
             </ErrorBoundary>
           ) : (
-            <div className="text-sm text-slate-600">No signed_url available for change.geojson yet.</div>
+            <div className="text-sm text-slate-600">No artifact URL available for change.geojson yet.</div>
           )}
         </div>
 
@@ -203,6 +206,7 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
               </div>
               <a
                 className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-50"
+                data-testid="artifact-mesh-download"
                 href={meshUrl}
                 target="_blank"
                 rel="noreferrer"
@@ -210,13 +214,11 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
                 <Download className="h-4 w-4" /> Download
               </a>
             </div>
-            <ErrorBoundary title="mesh.ply" message="The mesh viewer could not be rendered.">
-              <MeshViewer url={meshUrl} />
-            </ErrorBoundary>
+            <MeshViewer url={meshUrl} />
           </div>
         ) : (
           <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-            No signed_url available for mesh.ply yet.
+            No artifact URL available for mesh.ply yet.
           </div>
         )}
 

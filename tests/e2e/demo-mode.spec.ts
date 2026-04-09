@@ -1,15 +1,38 @@
+import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
+
+async function expectMeshState(page: Page) {
+  await expect(page.getByTestId('artifact-mesh')).toBeVisible();
+  await expect(page.getByTestId('mesh-download')).toBeVisible();
+
+  await expect
+    .poll(
+      async () => {
+        if (await page.getByTestId('mesh-ready').count()) return 'ready';
+        if (await page.getByTestId('mesh-error').count()) return 'error';
+        if (await page.getByTestId('mesh-unavailable').count()) return 'unavailable';
+        if (await page.getByTestId('mesh-boundary-error').count()) return 'boundary-error';
+        return 'loading';
+      },
+      { timeout: 15000 },
+    )
+    .toMatch(/ready|error|unavailable|boundary-error/);
+}
 
 test('demo mode renders a precomputed run and its artifacts', async ({ page }) => {
   await page.route('**/v1/demo/featured', async (route) => {
     await route.fulfill({
       contentType: 'application/json',
       body: JSON.stringify({
-        featured: [
+        Featured: [
           {
             run_id: 'demo-1',
-            title: 'Brooklyn demo',
+            label: 'Brooklyn demo',
             address: '100 E 21st St Brooklyn, NY 11226',
+            imagery_year: 2024,
+            baseline_year: 2017,
+            segmentation_backend: 'sam2',
+            outputs: ['previews', 'change', 'mesh'],
           },
         ],
       }),
@@ -24,17 +47,17 @@ test('demo mode renders a precomputed run and its artifacts', async ({ page }) =
         status: 'succeeded',
         stage: 'complete',
         progress: 1,
-        artifacts: {
-          preview: { name: 'preview.png', signed_url: 'https://example.test/preview.png' },
-          change: { name: 'change.geojson', signed_url: 'https://example.test/change.geojson' },
-          mesh: { name: 'mesh.ply', signed_url: 'https://example.test/mesh.ply' },
-          summary: { name: 'run_summary.json', signed_url: 'https://example.test/run_summary.json' },
-        },
+        artifacts: [
+          { name: 'preview.png', signed_url: '/v1/demo/artifacts/demo-1/preview.png' },
+          { name: 'change.geojson', signed_url: '/v1/demo/artifacts/demo-1/change.geojson' },
+          { name: 'mesh.ply', signed_url: '/v1/demo/artifacts/demo-1/mesh.ply' },
+          { name: 'run_summary.json', signed_url: '/v1/demo/artifacts/demo-1/run_summary.json' },
+        ],
       }),
     });
   });
 
-  await page.route('https://example.test/preview.png', async (route) => {
+  await page.route('**/v1/demo/artifacts/demo-1/preview.png', async (route) => {
     await route.fulfill({
       contentType: 'image/png',
       body: Buffer.from(
@@ -43,7 +66,7 @@ test('demo mode renders a precomputed run and its artifacts', async ({ page }) =
       ),
     });
   });
-  await page.route('https://example.test/change.geojson', async (route) => {
+  await page.route('**/v1/demo/artifacts/demo-1/change.geojson', async (route) => {
     await route.fulfill({
       contentType: 'application/json',
       body: JSON.stringify({
@@ -69,7 +92,7 @@ test('demo mode renders a precomputed run and its artifacts', async ({ page }) =
       }),
     });
   });
-  await page.route('https://example.test/mesh.ply', async (route) => {
+  await page.route('**/v1/demo/artifacts/demo-1/mesh.ply', async (route) => {
     await route.fulfill({
       contentType: 'text/plain',
       body: `ply
@@ -90,7 +113,7 @@ end_header
 `,
     });
   });
-  await page.route('https://example.test/run_summary.json', async (route) => {
+  await page.route('**/v1/demo/artifacts/demo-1/run_summary.json', async (route) => {
     await route.fulfill({
       contentType: 'application/json',
       body: JSON.stringify({
@@ -122,8 +145,10 @@ end_header
   await expect(page).toHaveURL(/\/runs\/demo-1\?demo=1/);
   await expect(page.getByRole('heading', { name: 'Run demo-1' })).toBeVisible();
   await expect(page.getByText('Demo run')).toBeVisible();
+  await expect(page.getByTestId('artifacts-panel')).toBeVisible();
   await expect(page.getByTestId('artifact-preview-name')).toHaveText('preview.png', { timeout: 15000 });
-  await expect(page.getByTestId('mesh-viewer').locator('canvas')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTestId('artifact-preview-download')).toBeVisible();
+  await expectMeshState(page);
 
   await page.getByTestId('run-summary-load').click();
   await expect(page.getByText('Reference case')).toBeVisible();

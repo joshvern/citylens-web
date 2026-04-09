@@ -42,6 +42,16 @@ function getBaseUrl(): string {
   return (v && v.trim().length > 0 ? v : 'http://localhost:8000').replace(/\/+$/, '');
 }
 
+export function resolveApiUrl(value: string | null | undefined): string | null {
+  if (!value || value.trim().length === 0) return null;
+  const raw = value.trim();
+  try {
+    return new URL(raw, `${getBaseUrl()}/`).toString();
+  } catch {
+    return raw;
+  }
+}
+
 async function requestJson<T>(
   path: string,
   init?: RequestInit,

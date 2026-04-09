@@ -98,7 +98,7 @@ export function RunSummaryPanel({
         {!summaryUrl ? (
           <div className="flex items-center gap-2 text-sm text-slate-600">
             <AlertTriangle className="h-4 w-4" />
-            <span>No signed_url available for run_summary.json yet.</span>
+            <span>No artifact URL available for run_summary.json yet.</span>
           </div>
         ) : loading ? (
           <div className="flex items-center gap-2 text-sm text-slate-600">

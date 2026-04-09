@@ -13,6 +13,7 @@ import { ArtifactsPanel } from '@/components/ArtifactsPanel';
 describe('ArtifactsPanel', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    delete process.env.NEXT_PUBLIC_CITYLENS_API_BASE;
   });
 
   it('normalizes named artifacts and renders client-only viewer placeholders', () => {
@@ -89,6 +90,28 @@ describe('ArtifactsPanel', () => {
     expect(screen.getByText('3 stage timings recorded')).toBeInTheDocument();
   });
 
+  it('rebases API-relative artifact URLs against NEXT_PUBLIC_CITYLENS_API_BASE', () => {
+    process.env.NEXT_PUBLIC_CITYLENS_API_BASE = 'https://api.citylens.dev';
+
+    render(
+      <ArtifactsPanel
+        run={{
+          run_id: 'demo-1',
+          artifacts: {
+            preview: { name: 'preview.png', signed_url: '/v1/demo/artifacts/demo-1/preview.png' },
+            change: { name: 'change.geojson', signed_url: '/v1/demo/artifacts/demo-1/change.geojson' },
+            mesh: { name: 'mesh.ply', signed_url: '/v1/demo/artifacts/demo-1/mesh.ply' },
+            summary: { name: 'run_summary.json', signed_url: '/v1/demo/artifacts/demo-1/run_summary.json' },
+          },
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId('preview-image')).toHaveTextContent(
+      'preview.png:https://api.citylens.dev/v1/demo/artifacts/demo-1/preview.png',
+    );
+  });
+
   it('shows a fallback when a mesh URL is missing', () => {
     render(
       <ArtifactsPanel
@@ -104,6 +127,6 @@ describe('ArtifactsPanel', () => {
       />,
     );
 
-    expect(screen.getByText('No signed_url available for mesh.ply yet.')).toBeInTheDocument();
+    expect(screen.getByText('No artifact URL available for mesh.ply yet.')).toBeInTheDocument();
   });
 });

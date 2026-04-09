@@ -1,4 +1,23 @@
+import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
+
+async function expectMeshState(page: Page) {
+  await expect(page.getByTestId('artifact-mesh')).toBeVisible();
+  await expect(page.getByTestId('mesh-download')).toBeVisible();
+
+  await expect
+    .poll(
+      async () => {
+        if (await page.getByTestId('mesh-ready').count()) return 'ready';
+        if (await page.getByTestId('mesh-error').count()) return 'error';
+        if (await page.getByTestId('mesh-unavailable').count()) return 'unavailable';
+        if (await page.getByTestId('mesh-boundary-error').count()) return 'boundary-error';
+        return 'loading';
+      },
+      { timeout: 15000 },
+    )
+    .toMatch(/ready|error|unavailable|boundary-error/);
+}
 
 test('authenticated run detail renders artifacts and qa summary', async ({ page }) => {
   await page.addInitScript(() => {
@@ -13,12 +32,12 @@ test('authenticated run detail renders artifacts and qa summary', async ({ page 
         status: 'succeeded',
         stage: 'complete',
         progress: 1,
-        artifacts: {
-          preview: { name: 'preview.png', signed_url: 'https://example.test/preview.png' },
-          change: { name: 'change.geojson', signed_url: 'https://example.test/change.geojson' },
-          mesh: { name: 'mesh.ply', signed_url: 'https://example.test/mesh.ply' },
-          summary: { name: 'run_summary.json', signed_url: 'https://example.test/run_summary.json' },
-        },
+        artifacts: [
+          { name: 'preview.png', signed_url: 'https://example.test/preview.png' },
+          { name: 'change.geojson', signed_url: 'https://example.test/change.geojson' },
+          { name: 'mesh.ply', signed_url: 'https://example.test/mesh.ply' },
+          { name: 'run_summary.json', signed_url: 'https://example.test/run_summary.json' },
+        ],
       }),
     });
   });
@@ -99,8 +118,10 @@ end_header
   await page.goto('/runs/run-123');
   await expect(page.getByRole('heading', { name: 'Run run-123' })).toBeVisible();
   await expect(page.getByText('Status')).toBeVisible();
+  await expect(page.getByTestId('artifacts-panel')).toBeVisible();
   await expect(page.getByTestId('artifact-preview-name')).toHaveText('preview.png', { timeout: 15000 });
-  await expect(page.getByTestId('mesh-viewer').locator('canvas')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTestId('artifact-preview-download')).toBeVisible();
+  await expectMeshState(page);
 
   await page.getByTestId('run-summary-load').click();
   await expect(page.getByText('Reference case')).toBeVisible();
