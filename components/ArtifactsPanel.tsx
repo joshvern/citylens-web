@@ -1,12 +1,15 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Download, FileJson, Image as ImageIcon } from 'lucide-react';
 
 import type { RunResponse, ArtifactRecord } from '@/lib/types';
 import { safeJsonStringify } from '@/lib/utils';
 import { PreviewImage } from '@/components/PreviewImage';
 import { GeojsonMap } from '@/components/GeojsonMap';
+import { MeshViewer } from '@/components/MeshViewer';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { RunSummaryPanel } from '@/components/RunSummaryPanel';
 
 const EXPECTED = ['preview.png', 'change.geojson', 'mesh.ply', 'run_summary.json'] as const;
 
@@ -23,7 +26,16 @@ function pickUrl(a?: ArtifactRecord): string | null {
 }
 
 function normalizeArtifacts(run?: RunResponse): Record<ExpectedArtifactName, ArtifactRecord | undefined> {
-  const map = (run?.artifacts ?? {}) as Record<string, ArtifactRecord>;
+  const rawArtifacts = run?.artifacts;
+  const map = (
+    Array.isArray(rawArtifacts)
+      ? Object.fromEntries(
+          rawArtifacts
+            .filter((artifact): artifact is ArtifactRecord => Boolean(artifact))
+            .map((artifact, index) => [String(index), artifact]),
+        )
+      : (rawArtifacts ?? {})
+  ) as Record<string, ArtifactRecord>;
 
   const direct = {
     'preview.png': map['preview.png'],
@@ -58,7 +70,16 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
   const summaryUrl = pickUrl(artifacts['run_summary.json']);
 
   const [summaryText, setSummaryText] = useState<string | null>(null);
+  const [summaryData, setSummaryData] = useState<Record<string, unknown> | null>(null);
   const [summaryErr, setSummaryErr] = useState<string | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+
+  useEffect(() => {
+    setSummaryText(null);
+    setSummaryData(null);
+    setSummaryErr(null);
+    setSummaryLoading(false);
+  }, [summaryUrl, run?.run_id]);
 
   function errorMessage(e: unknown): string {
     return e instanceof Error ? e.message : String(e);
@@ -66,14 +87,17 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
 
   async function loadSummary() {
     if (!summaryUrl) return;
+    setSummaryLoading(true);
     setSummaryErr(null);
     setSummaryText(null);
+    setSummaryData(null);
     try {
       const res = await fetch(summaryUrl);
       if (!res.ok) throw new Error(`run_summary.json fetch failed (${res.status})`);
       const ct = res.headers.get('content-type') ?? '';
       if (ct.includes('application/json')) {
         const json = await res.json();
+        setSummaryData((json && typeof json === 'object' ? (json as Record<string, unknown>) : null) ?? null);
         setSummaryText(safeJsonStringify(json, 2));
       } else {
         const txt = await res.text();
@@ -81,6 +105,8 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
       }
     } catch (e: unknown) {
       setSummaryErr(errorMessage(e));
+    } finally {
+      setSummaryLoading(false);
     }
   }
 
@@ -119,7 +145,9 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
             )}
           </div>
           {previewUrl ? (
-            <PreviewImage src={previewUrl} alt="preview.png" />
+            <ErrorBoundary title="preview.png" message="The preview image could not be rendered.">
+              <PreviewImage src={previewUrl} alt="preview.png" />
+            </ErrorBoundary>
           ) : (
             <div className="text-sm text-slate-600">No signed_url available for preview.png yet.</div>
           )}
@@ -143,72 +171,48 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
             )}
           </div>
           {changeUrl ? (
-            <GeojsonMap url={changeUrl} />
+            <ErrorBoundary title="change.geojson" message="The change map could not be rendered.">
+              <GeojsonMap url={changeUrl} />
+            </ErrorBoundary>
           ) : (
             <div className="text-sm text-slate-600">No signed_url available for change.geojson yet.</div>
           )}
         </div>
 
         {/* Mesh */}
-        <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
-          <div className="text-sm font-medium">mesh.ply</div>
-          {meshUrl ? (
-            <a
-              className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-50"
-              href={meshUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Download className="h-4 w-4" /> Download
-            </a>
-          ) : (
-            <div className="text-sm text-slate-600">No signed_url available yet.</div>
-          )}
-        </div>
-
-        {/* Summary */}
-        <div className="rounded-lg border border-slate-200 bg-white">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <div className="text-sm font-medium">run_summary.json</div>
-            <div className="flex items-center gap-2">
-              {summaryUrl && (
-                <a
-                  className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-50"
-                  href={summaryUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Download className="h-4 w-4" /> Download
-                </a>
-              )}
-              {summaryUrl && (
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800"
-                  onClick={loadSummary}
-                >
-                  Load
-                </button>
-              )}
+        {meshUrl ? (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Download className="h-4 w-4" /> mesh.ply
+              </div>
+              <a
+                className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-50"
+                href={meshUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Download className="h-4 w-4" /> Download
+              </a>
             </div>
+            <ErrorBoundary title="mesh.ply" message="The mesh viewer could not be rendered.">
+              <MeshViewer url={meshUrl} />
+            </ErrorBoundary>
           </div>
-          <div className="p-4">
-            {!summaryUrl ? (
-              <div className="text-sm text-slate-600">No signed_url available for run_summary.json yet.</div>
-            ) : summaryErr ? (
-              <div className="text-sm text-rose-700">{summaryErr}</div>
-            ) : summaryText ? (
-              <details open>
-                <summary className="cursor-pointer text-sm font-medium text-slate-900">View JSON</summary>
-                <pre className="mt-3 max-h-96 overflow-auto rounded-md bg-slate-950 p-3 text-xs text-slate-100">
-                  {summaryText}
-                </pre>
-              </details>
-            ) : (
-              <div className="text-sm text-slate-600">Click Load to view formatted JSON.</div>
-            )}
+        ) : (
+          <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+            No signed_url available for mesh.ply yet.
           </div>
-        </div>
+        )}
+
+        <RunSummaryPanel
+          summaryUrl={summaryUrl}
+          summary={summaryData}
+          rawText={summaryText}
+          loading={summaryLoading}
+          error={summaryErr}
+          onLoad={loadSummary}
+        />
       </div>
     </div>
   );

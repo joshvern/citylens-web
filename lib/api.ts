@@ -1,6 +1,6 @@
 import { getApiKey } from '@/lib/storage';
 import type { CitylensCreateRunPayload } from '@/lib/validation';
-import type { CreateRunResponse, RunResponse } from '@/lib/types';
+import type { CreateRunResponse, RunListItem, RunResponse, RunsListResponse } from '@/lib/types';
 
 export type DemoFeaturedRun = {
   run_id?: string;
@@ -14,6 +14,16 @@ export type DemoFeaturedRun = {
   outputs?: string[];
   request?: Record<string, unknown>;
 } & Record<string, unknown>;
+
+export type RunsQuery = {
+  limit?: number;
+  cursor?: string | null;
+};
+
+export type RunsPage = {
+  items: RunListItem[];
+  nextCursor: string | null;
+};
 
 export class ApiError extends Error {
   status?: number;
@@ -70,6 +80,30 @@ async function requestJson<T>(
   return body as T;
 }
 
+function parseRunsResponse(raw: unknown): RunsPage {
+  if (Array.isArray(raw)) {
+    return { items: raw as RunListItem[], nextCursor: null };
+  }
+
+  if (raw && typeof raw === 'object') {
+    const obj = raw as RunsListResponse & Record<string, unknown>;
+    const items = obj.items ?? obj.runs;
+    if (Array.isArray(items)) {
+      return {
+        items: items as RunListItem[],
+        nextCursor:
+          typeof obj.next_cursor === 'string'
+            ? obj.next_cursor
+            : typeof obj.nextCursor === 'string'
+              ? obj.nextCursor
+              : null,
+      };
+    }
+  }
+
+  return { items: [], nextCursor: null };
+}
+
 export async function health(): Promise<unknown> {
   return requestJson('/v1/health');
 }
@@ -95,6 +129,20 @@ export async function createRun(req: CitylensCreateRunPayload): Promise<{ runId:
 
 export async function getRun(runId: string): Promise<RunResponse> {
   return requestJson<RunResponse>(`/v1/runs/${encodeURIComponent(runId)}`);
+}
+
+export async function getRuns(query?: RunsQuery): Promise<RunsPage> {
+  const params = new URLSearchParams();
+  if (typeof query?.limit === 'number' && Number.isFinite(query.limit) && query.limit > 0) {
+    params.set('limit', String(Math.floor(query.limit)));
+  }
+  if (typeof query?.cursor === 'string' && query.cursor.trim().length > 0) {
+    params.set('cursor', query.cursor.trim());
+  }
+
+  const suffix = params.toString().length > 0 ? `?${params.toString()}` : '';
+  const raw = await requestJson<unknown>(`/v1/runs${suffix}`);
+  return parseRunsResponse(raw);
 }
 
 export async function getFeaturedDemos(): Promise<DemoFeaturedRun[]> {

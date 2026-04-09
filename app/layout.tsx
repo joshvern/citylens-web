@@ -12,6 +12,7 @@ const title = 'CityLens';
 const description = 'API-first urban change detection and 3D reconstruction from open geospatial data.';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://citylens.dev'),
   title,
   description,
   openGraph: {
