@@ -8,14 +8,6 @@ vi.mock('@/components/PreviewImage', () => ({
   ),
 }));
 
-vi.mock('@/components/GeojsonMap', () => ({
-  GeojsonMap: ({ url }: { url: string }) => <div data-testid="geojson-map">{url}</div>,
-}));
-
-vi.mock('@/components/MeshViewer', () => ({
-  MeshViewer: ({ url }: { url: string }) => <div data-testid="mesh-viewer">{url}</div>,
-}));
-
 import { ArtifactsPanel } from '@/components/ArtifactsPanel';
 
 describe('ArtifactsPanel', () => {
@@ -23,7 +15,7 @@ describe('ArtifactsPanel', () => {
     vi.unstubAllGlobals();
   });
 
-  it('normalizes named artifacts and renders the mesh viewer', () => {
+  it('normalizes named artifacts and renders client-only viewer placeholders', () => {
     render(
       <ArtifactsPanel
         run={{
@@ -39,8 +31,8 @@ describe('ArtifactsPanel', () => {
     );
 
     expect(screen.getByTestId('preview-image')).toHaveTextContent('preview.png:https://example.test/preview.png');
-    expect(screen.getByTestId('geojson-map')).toHaveTextContent('https://example.test/change.geojson');
-    expect(screen.getByTestId('mesh-viewer')).toHaveTextContent('https://example.test/mesh.ply');
+    expect(screen.getByText('Loading change.geojson viewer…')).toBeInTheDocument();
+    expect(screen.getByText('Loading mesh viewer…')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Load' })).toBeInTheDocument();
   });
 

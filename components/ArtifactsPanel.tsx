@@ -1,15 +1,30 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Download, FileJson, Image as ImageIcon } from 'lucide-react';
 
 import type { RunResponse, ArtifactRecord } from '@/lib/types';
 import { safeJsonStringify } from '@/lib/utils';
 import { PreviewImage } from '@/components/PreviewImage';
-import { GeojsonMap } from '@/components/GeojsonMap';
-import { MeshViewer } from '@/components/MeshViewer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RunSummaryPanel } from '@/components/RunSummaryPanel';
+
+const GeojsonMap = dynamic(
+  () => import('@/components/GeojsonMap').then((mod) => mod.GeojsonMap),
+  {
+    ssr: false,
+    loading: () => <div className="text-sm text-slate-600">Loading change.geojson viewer…</div>,
+  },
+);
+
+const MeshViewer = dynamic(
+  () => import('@/components/MeshViewer').then((mod) => mod.MeshViewer),
+  {
+    ssr: false,
+    loading: () => <div className="text-sm text-slate-600">Loading mesh viewer…</div>,
+  },
+);
 
 const EXPECTED = ['preview.png', 'change.geojson', 'mesh.ply', 'run_summary.json'] as const;
 
