@@ -157,7 +157,7 @@ export function MeshViewer({ url }: { url: string }) {
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <a
               className="inline-flex items-center gap-2 rounded-md border border-rose-200 bg-white px-3 py-2 text-sm font-medium text-rose-800 hover:bg-rose-50"
-              data-testid="mesh-download"
+              data-testid="mesh-error-download"
               href={url}
               target="_blank"
               rel="noreferrer"
@@ -208,7 +208,7 @@ export function MeshViewer({ url }: { url: string }) {
         </div>
         <a
           className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
-          data-testid="mesh-download"
+          data-testid="mesh-viewer-download"
           href={url}
           target="_blank"
           rel="noreferrer"

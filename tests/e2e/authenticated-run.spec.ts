@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 
 async function expectMeshState(page: Page) {
   await expect(page.getByTestId('artifact-mesh')).toBeVisible();
-  await expect(page.getByTestId('mesh-download')).toBeVisible();
+  await expect(page.getByTestId('artifact-mesh-download')).toBeVisible();
 
   await expect
     .poll(

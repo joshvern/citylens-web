@@ -32,6 +32,7 @@ describe('ArtifactsPanel', () => {
     );
 
     expect(screen.getByTestId('preview-image')).toHaveTextContent('preview.png:https://example.test/preview.png');
+    expect(screen.getByTestId('artifact-mesh-download')).toBeInTheDocument();
     expect(screen.getByText('Loading change.geojson viewer…')).toBeInTheDocument();
     expect(screen.getByText('Loading mesh viewer…')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Load' })).toBeInTheDocument();
