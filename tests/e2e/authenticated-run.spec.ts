@@ -4,19 +4,8 @@ import { expect, test } from '@playwright/test';
 async function expectMeshState(page: Page) {
   await expect(page.getByTestId('artifact-mesh')).toBeVisible();
   await expect(page.getByTestId('artifact-mesh-download')).toBeVisible();
-
-  await expect
-    .poll(
-      async () => {
-        if (await page.getByTestId('mesh-ready').count()) return 'ready';
-        if (await page.getByTestId('mesh-error').count()) return 'error';
-        if (await page.getByTestId('mesh-unavailable').count()) return 'unavailable';
-        if (await page.getByTestId('mesh-boundary-error').count()) return 'boundary-error';
-        return 'loading';
-      },
-      { timeout: 15000 },
-    )
-    .toMatch(/ready|error|unavailable|boundary-error/);
+  await expect(page.getByTestId('mesh-status')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTestId('mesh-status')).toHaveText(/Loading|Ready|Error|Unavailable/);
 }
 
 test('authenticated run detail renders artifacts and qa summary', async ({ page }) => {
