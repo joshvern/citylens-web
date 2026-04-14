@@ -114,7 +114,7 @@ end_header
 
   await page.getByTestId('run-summary-load').click();
   await expect(page.getByText('Reference case')).toBeVisible();
-  await expect(page.getByText('100 E 21st St Brooklyn, NY 11226')).toBeVisible();
+  await expect(page.getByText('100 E 21st St Brooklyn, NY 11226').first()).toBeVisible();
   await expect(page.getByText('Added: 1')).toBeVisible();
   await expect(page.getByText('Removed: 0')).toBeVisible();
 });
