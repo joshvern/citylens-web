@@ -13,6 +13,7 @@ import { ArtifactsPanel } from '@/components/ArtifactsPanel';
 describe('ArtifactsPanel', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
     delete process.env.NEXT_PUBLIC_CITYLENS_API_BASE;
   });
 
@@ -129,5 +130,25 @@ describe('ArtifactsPanel', () => {
     );
 
     expect(screen.getByText('No artifact URL available for mesh.ply yet.')).toBeInTheDocument();
+  });
+
+  it('shows a clear config error for relative artifact URLs in production without an API base', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    delete process.env.NEXT_PUBLIC_CITYLENS_API_BASE;
+
+    render(
+      <ArtifactsPanel
+        run={{
+          run_id: 'demo-1',
+          artifacts: {
+            preview: { name: 'preview.png', signed_url: '/v1/demo/artifacts/demo-1/preview.png' },
+          },
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/Frontend config error:/)).toHaveTextContent(
+      'NEXT_PUBLIC_CITYLENS_API_BASE is required in production.',
+    );
   });
 });

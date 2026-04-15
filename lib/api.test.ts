@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { createRun, getRuns, resolveApiUrl } from '@/lib/api';
+import { ApiConfigError, createRun, getRuns, joinApiUrl, resolveApiUrl } from '@/lib/api';
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
 });
 
 describe('api client', () => {
@@ -58,5 +59,18 @@ describe('api client', () => {
       'https://api.citylens.dev/v1/demo/artifacts/demo-1/preview.png',
     );
     expect(resolveApiUrl('https://example.test/preview.png')).toBe('https://example.test/preview.png');
+  });
+
+  it('preserves API path prefixes when joining relative API URLs', () => {
+    expect(joinApiUrl('https://api.citylens.dev/platform', '/v1/demo/artifacts/demo-1/preview.png')).toBe(
+      'https://api.citylens.dev/platform/v1/demo/artifacts/demo-1/preview.png',
+    );
+  });
+
+  it('requires NEXT_PUBLIC_CITYLENS_API_BASE in production', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    delete process.env.NEXT_PUBLIC_CITYLENS_API_BASE;
+
+    expect(() => resolveApiUrl('/v1/demo/artifacts/demo-1/preview.png')).toThrow(ApiConfigError);
   });
 });

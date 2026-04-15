@@ -6,6 +6,7 @@ import '../styles/globals.css';
 
 import { ApiKeyGate } from '@/components/ApiKeyGate';
 import { DemoModeBanner } from '@/components/DemoModeBanner';
+import { publicAssetPath } from '@/lib/site';
 import { Toasts } from '@/components/Toasts';
 
 const title = 'CityLens';
@@ -18,17 +19,17 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description,
-    images: ['/opengraph-image.png'],
+    images: [publicAssetPath('/opengraph-image.png')],
   },
   twitter: {
     card: 'summary_large_image',
     title,
     description,
-    images: ['/opengraph-image.png'],
+    images: [publicAssetPath('/opengraph-image.png')],
   },
   icons: {
-    icon: [{ url: '/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
-    apple: [{ url: '/apple-touch-icon.png' }],
+    icon: [{ url: publicAssetPath('/favicon.ico') }, { url: publicAssetPath('/icon.png'), type: 'image/png' }],
+    apple: [{ url: publicAssetPath('/apple-touch-icon.png') }],
   },
 };
 
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-3">
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center gap-2">
-                <Image src="/citylens-mark.png" alt="CityLens" width={24} height={24} priority />
+                <Image src={publicAssetPath('/citylens-mark.png')} alt="CityLens" width={24} height={24} priority />
                 <span className="text-lg font-semibold">CityLens</span>
               </Link>
               <nav className="hidden items-center gap-4 text-sm md:flex">

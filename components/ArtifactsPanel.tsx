@@ -35,10 +35,19 @@ function isExpectedArtifactName(v: string): v is ExpectedArtifactName {
   return (EXPECTED as readonly string[]).includes(v);
 }
 
-function pickUrl(a?: ArtifactRecord): string | null {
-  if (!a) return null;
+type ArtifactUrlResult = {
+  url: string | null;
+  error: string | null;
+};
+
+function pickUrl(a?: ArtifactRecord): ArtifactUrlResult {
+  if (!a) return { url: null, error: null };
   const u = (a.signed_url ?? a.url) as string | undefined;
-  return resolveApiUrl(u);
+  try {
+    return { url: resolveApiUrl(u), error: null };
+  } catch (e: unknown) {
+    return { url: null, error: e instanceof Error ? e.message : String(e) };
+  }
 }
 
 function normalizeArtifacts(run?: RunResponse): Record<ExpectedArtifactName, ArtifactRecord | undefined> {
@@ -80,10 +89,15 @@ function normalizeArtifacts(run?: RunResponse): Record<ExpectedArtifactName, Art
 
 export function ArtifactsPanel({ run }: { run?: RunResponse }) {
   const artifacts = useMemo(() => normalizeArtifacts(run), [run]);
-  const previewUrl = pickUrl(artifacts['preview.png']);
-  const changeUrl = pickUrl(artifacts['change.geojson']);
-  const meshUrl = pickUrl(artifacts['mesh.ply']);
-  const summaryUrl = pickUrl(artifacts['run_summary.json']);
+  const preview = pickUrl(artifacts['preview.png']);
+  const change = pickUrl(artifacts['change.geojson']);
+  const mesh = pickUrl(artifacts['mesh.ply']);
+  const summary = pickUrl(artifacts['run_summary.json']);
+  const previewUrl = preview.url;
+  const changeUrl = change.url;
+  const meshUrl = mesh.url;
+  const summaryUrl = summary.url;
+  const artifactConfigError = preview.error ?? change.error ?? mesh.error ?? summary.error ?? null;
 
   const [summaryText, setSummaryText] = useState<string | null>(null);
   const [summaryData, setSummaryData] = useState<Record<string, unknown> | null>(null);
@@ -143,6 +157,12 @@ export function ArtifactsPanel({ run }: { run?: RunResponse }) {
       </div>
 
       <div className="flex flex-col gap-4 p-4">
+        {artifactConfigError && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            Frontend config error: {artifactConfigError}
+          </div>
+        )}
+
         {/* Preview */}
         <div className="flex flex-col gap-2" data-testid="artifact-preview">
           <div className="flex items-center justify-between">

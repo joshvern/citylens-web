@@ -25,6 +25,13 @@ export type RunsPage = {
   nextCursor: string | null;
 };
 
+export class ApiConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ApiConfigError';
+  }
+}
+
 export class ApiError extends Error {
   status?: number;
   body?: unknown;
@@ -39,17 +46,47 @@ export class ApiError extends Error {
 
 function getBaseUrl(): string {
   const v = process.env.NEXT_PUBLIC_CITYLENS_API_BASE;
-  return (v && v.trim().length > 0 ? v : 'http://localhost:8000').replace(/\/+$/, '');
+  if (v && v.trim().length > 0) return v.replace(/\/+$/, '');
+  if (process.env.NODE_ENV === 'production') {
+    throw new ApiConfigError('NEXT_PUBLIC_CITYLENS_API_BASE is required in production.');
+  }
+  return 'http://localhost:8000';
+}
+
+function isAbsoluteUrl(value: string): boolean {
+  return /^[a-z][a-z0-9+.-]*:\/\//i.test(value);
+}
+
+export function joinApiUrl(base: string, value: string): string {
+  const raw = value.trim();
+  if (!raw) return base;
+  if (isAbsoluteUrl(raw)) return raw;
+
+  const target = new URL(base);
+  const hashIndex = raw.indexOf('#');
+  const hash = hashIndex >= 0 ? raw.slice(hashIndex + 1) : '';
+  const withoutHash = hashIndex >= 0 ? raw.slice(0, hashIndex) : raw;
+  const queryIndex = withoutHash.indexOf('?');
+  const query = queryIndex >= 0 ? withoutHash.slice(queryIndex + 1) : '';
+  const pathname = queryIndex >= 0 ? withoutHash.slice(0, queryIndex) : withoutHash;
+
+  const basePath = target.pathname.replace(/\/+$/, '');
+  const relativePath = pathname.trim();
+  const joinedPath =
+    relativePath.length === 0
+      ? basePath || '/'
+      : `${basePath}${relativePath.startsWith('/') ? relativePath : `/${relativePath}`}`.replace(/\/{2,}/g, '/');
+
+  target.pathname = joinedPath || '/';
+  target.search = query ? `?${query}` : '';
+  target.hash = hash ? `#${hash}` : '';
+  return target.toString();
 }
 
 export function resolveApiUrl(value: string | null | undefined): string | null {
   if (!value || value.trim().length === 0) return null;
   const raw = value.trim();
-  try {
-    return new URL(raw, `${getBaseUrl()}/`).toString();
-  } catch {
-    return raw;
-  }
+  return isAbsoluteUrl(raw) ? raw : joinApiUrl(getBaseUrl(), raw);
 }
 
 async function requestJson<T>(
@@ -57,7 +94,7 @@ async function requestJson<T>(
   init?: RequestInit,
   opts?: { includeApiKey?: boolean },
 ): Promise<T> {
-  const url = `${getBaseUrl()}${path}`;
+  const url = joinApiUrl(getBaseUrl(), path);
   const includeApiKey = opts?.includeApiKey ?? true;
   const apiKey = includeApiKey ? getApiKey() : null;
 

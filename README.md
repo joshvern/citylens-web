@@ -54,7 +54,11 @@ The fixed parity/acceptance case for the modular stack is:
 
 - `NEXT_PUBLIC_CITYLENS_API_BASE`
   - Base URL for the API
-  - Default: `http://localhost:8000`
+  - Local default: `http://localhost:8000`
+  - Required in production builds
+- `NEXT_PUBLIC_SITE_BASE_PATH`
+  - Optional path prefix when the site is hosted under a subpath such as `/citylens-web`
+  - Default: unset / root-mounted
 
 ## Volta (recommended)
 
@@ -110,6 +114,7 @@ confusion when other CityLens repos have their own toolchains.
 1) Push this folder as its own repo, or deploy the subfolder.
 2) In Vercel project settings, set:
 - `NEXT_PUBLIC_CITYLENS_API_BASE` = `https://<YOUR_API_BASE>`
+- `NEXT_PUBLIC_SITE_BASE_PATH` = `/your-subpath` only if the site is not hosted at `/`
 3) Deploy.
 
 ## Icons
@@ -156,6 +161,7 @@ npm run dev
 
 3) Set environment variables in Vercel
 - `NEXT_PUBLIC_CITYLENS_API_BASE` = `https://<YOUR_API_BASE>`
+- `NEXT_PUBLIC_SITE_BASE_PATH` = `/your-subpath` only if the Vercel app is mounted below `/`
 
 4) Deploy
 - Trigger a deploy and open the Vercel URL
