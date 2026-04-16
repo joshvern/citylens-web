@@ -64,6 +64,7 @@ export function joinApiUrl(base: string, value: string): string {
     return raw.startsWith('/') ? raw : `/${raw}`;
   }
 
+
   const target = new URL(base);
   const hashIndex = raw.indexOf('#');
   const hash = hashIndex >= 0 ? raw.slice(hashIndex + 1) : '';
