@@ -159,7 +159,7 @@ test('shows error message instead of infinite loading when demo API is unreachab
 
   await page.goto('/runs/demo-fail?demo=1');
   await expect(page.getByText('Demo run')).toBeVisible();
-  await expect(page.getByText(/404|not found/i)).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText('Error loading run')).toBeVisible({ timeout: 15000 });
 });
 
 test('homepage shows error text when /v1/demo/featured returns 404', async ({ page }) => {
