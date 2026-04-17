@@ -45,9 +45,11 @@ export class ApiError extends Error {
 }
 
 function getBaseUrl(): string {
+  // In production, always use same-origin requests routed through Next.js rewrites.
+  // The rewrite destination is configured in next.config.js via NEXT_PUBLIC_CITYLENS_API_BASE.
+  if (process.env.NODE_ENV === 'production') return '';
   const v = process.env.NEXT_PUBLIC_CITYLENS_API_BASE;
   if (v && v.trim().length > 0) return v.replace(/\/+$/, '');
-  if (process.env.NODE_ENV === 'production') return '';
   return 'http://localhost:8000';
 }
 
