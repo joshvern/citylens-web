@@ -10,7 +10,10 @@ async function expectMeshState(page: Page) {
 
 test('authenticated run detail renders artifacts and qa summary', async ({ page }) => {
   await page.addInitScript(() => {
-    localStorage.setItem('citylens_api_key', 'test-key');
+    sessionStorage.setItem(
+      'citylens_mock_auth_user',
+      JSON.stringify({ id: 'mock-test', email: 'test@mock.local', displayName: 'mock-test' }),
+    );
   });
 
   await page.route('**/v1/runs/run-123', async (route) => {

@@ -1,18 +1,20 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 
 import { ArtifactsPanel } from '@/components/ArtifactsPanel';
 import { RunStatusCard } from '@/components/RunStatusCard';
 import { ApiError, getDemoRun, getRun } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
+import { rememberRecentRun, setRunStatusCache } from '@/lib/storage';
 import type { RunResponse } from '@/lib/types';
-import { getApiKey, rememberRecentRun, setRunStatusCache } from '@/lib/storage';
 
 export default function RunDetailPage() {
   const params = useParams<{ runId: string }>();
   const searchParams = useSearchParams();
+  const auth = useAuth();
   const runId = params.runId;
 
   const forceDemo = useMemo(() => {
@@ -20,16 +22,8 @@ export default function RunDetailPage() {
     return v === '1' || v === 'true' || v === 'yes';
   }, [searchParams]);
 
-  const [apiKeyPresent, setApiKeyPresent] = useState<boolean>(() => Boolean(getApiKey()));
-
-  useEffect(() => {
-    const sync = () => setApiKeyPresent(Boolean(getApiKey()));
-    sync();
-    window.addEventListener('citylens_api_key_changed', sync);
-    return () => window.removeEventListener('citylens_api_key_changed', sync);
-  }, []);
-
-  const mode = forceDemo || !apiKeyPresent ? 'demo' : 'live';
+  const signedIn = auth.status === 'authenticated';
+  const mode = forceDemo || !signedIn ? 'demo' : 'live';
   const swrKey = useMemo(() => ['run', runId, mode] as const, [runId, mode]);
 
   const { data, error, isLoading } = useSWR<RunResponse>(
