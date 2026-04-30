@@ -14,7 +14,7 @@
     "generate:icons": "node scripts/generate-icons.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:watch": "vitest"
