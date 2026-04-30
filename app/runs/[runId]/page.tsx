@@ -22,9 +22,16 @@ export default function RunDetailPage() {
     return v === '1' || v === 'true' || v === 'yes';
   }, [searchParams]);
 
+  const authResolved = auth.status !== 'loading';
   const signedIn = auth.status === 'authenticated';
   const mode = forceDemo || !signedIn ? 'demo' : 'live';
-  const swrKey = useMemo(() => ['run', runId, mode] as const, [runId, mode]);
+  // Don't kick off the SWR fetch until auth has decided whether we're
+  // signed in. Otherwise the first fetch hits the demo URL during the
+  // brief loading window and the cached error blocks the live retry.
+  const swrKey = useMemo(
+    () => (authResolved ? (['run', runId, mode] as const) : null),
+    [authResolved, runId, mode],
+  );
 
   const { data, error, isLoading } = useSWR<RunResponse>(
     swrKey,
