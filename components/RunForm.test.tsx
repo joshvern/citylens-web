@@ -154,13 +154,18 @@ describe('RunForm', () => {
       );
     });
 
-    it('skips the empty-state if SSR provided initialFeatured=[] but the fetch then resolves with demos', () => {
-      // Edge case: caller passes an empty initialFeatured to indicate "we
-      // already tried and got nothing on the server"; the form should not
-      // refetch and should show the safe error/empty copy.
+    it('falls back to a client-side fetch when SSR returned an empty list', async () => {
+      // SSR returning [] is treated as a hint, not authoritative — could
+      // mean the API was unreachable from the server during ISR. Try the
+      // client path so Playwright e2e mocks still apply and so real users
+      // recover when the API is reachable from the browser even if not
+      // from the Next server.
+      mocks.getFeaturedDemos.mockResolvedValueOnce([
+        { run_id: 'fallback-1', label: 'Fallback demo' },
+      ]);
       render(<RunForm initialFeatured={[]} />);
-      expect(mocks.getFeaturedDemos).not.toHaveBeenCalled();
-      expect(screen.getByText(/temporarily unavailable/i)).toBeInTheDocument();
+      await waitFor(() => expect(mocks.getFeaturedDemos).toHaveBeenCalledTimes(1));
+      expect(screen.getByRole('option', { name: 'Fallback demo' })).toBeInTheDocument();
     });
   });
 });

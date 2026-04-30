@@ -41,15 +41,21 @@ export function RunForm({ initialFeatured }: RunFormProps = {}) {
   // 'loading' so SSR/cold-mount shows a neutral skeleton, never the
   // crawler-hostile "no demos" message.
   const [featured, setFeatured] = useState<DemoFeaturedRun[]>(initialFeatured ?? []);
+  const hasInitial = Array.isArray(initialFeatured) && initialFeatured.length > 0;
   const [featuredStatus, setFeaturedStatus] = useState<'loading' | 'loaded' | 'error'>(
-    initialFeatured ? 'loaded' : 'loading',
+    hasInitial ? 'loaded' : 'loading',
   );
   const [selectedDemoRunId, setSelectedDemoRunId] = useState<string>('');
 
   const signedIn = auth.status === 'authenticated';
 
   useEffect(() => {
-    if (initialFeatured) return; // server already provided demos
+    // Skip the client fetch only if the server already gave us a populated
+    // list. If SSR fetched 0 demos (rare — API outage, network policy, e2e
+    // test environment without internet) fall back to the client path so
+    // we still discover demos at runtime and so Playwright route mocks
+    // still apply during e2e.
+    if (hasInitial) return;
     let alive = true;
     setFeaturedStatus('loading');
     getFeaturedDemos()
@@ -65,7 +71,7 @@ export function RunForm({ initialFeatured }: RunFormProps = {}) {
     return () => {
       alive = false;
     };
-  }, [initialFeatured]);
+  }, [hasInitial]);
 
   const canSubmit = useMemo(() => signedIn && !submitting, [signedIn, submitting]);
 

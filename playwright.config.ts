@@ -21,6 +21,15 @@ export default defineConfig({
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
+    env: {
+      // Force the SSR-side featured-demos fetcher to fail fast during e2e
+      // by pointing it at a non-listening URL. This makes RunForm fall
+      // through to its client-side fetch, which Playwright's `page.route`
+      // mocks can intercept. Without this, the homepage's Server
+      // Component would hit api.citylens.dev directly and bypass the
+      // test's network mocks entirely.
+      CITYLENS_API_INTERNAL_URL: 'http://127.0.0.1:1',
+    },
   },
   projects: [
     {
