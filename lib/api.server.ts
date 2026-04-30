@@ -34,8 +34,15 @@ function serverApiBase(): string {
  *
  * Failures degrade gracefully to an empty array; the caller decides how to
  * render the empty/error state in a product-safe way.
+ *
+ * Environment overrides:
+ * - `CITYLENS_DISABLE_SSR_DEMOS=1` — short-circuit to []. Useful for
+ *   Playwright e2e where the test relies on `page.route` mocks of the
+ *   browser fetch (which Server-side fetches bypass).
  */
 export async function fetchFeaturedDemosOnServer(): Promise<DemoFeaturedRun[]> {
+  if (process.env.CITYLENS_DISABLE_SSR_DEMOS === '1') return [];
+
   const url = `${serverApiBase()}/v1/demo/featured`;
   try {
     const res = await fetch(url, {
@@ -43,6 +50,8 @@ export async function fetchFeaturedDemosOnServer(): Promise<DemoFeaturedRun[]> {
       // homepage SSR cache within a minute, without hammering the API.
       next: { revalidate: 60 },
       headers: { Accept: 'application/json' },
+      // Hard ceiling so a stuck upstream can't block the page render.
+      signal: AbortSignal.timeout(2_000),
     });
     if (!res.ok) return [];
     const raw = await res.json().catch(() => null);
