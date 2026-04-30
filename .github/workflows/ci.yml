@@ -3,7 +3,11 @@ name: ci
 on:
   push:
     branches:
+      # Default branch is `main`; `master` is listed too so this still
+      # works if the repo is renamed or aligned with sibling repos.
+      # PRs already trigger via `pull_request:`.
       - main
+      - master
   pull_request:
 
 jobs:
