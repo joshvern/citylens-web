@@ -376,6 +376,10 @@ export type ParcelIntelRow = {
   is_historic_district: boolean;
   block_id: string | null;
   block_rank: number | null;
+  /** Current deed owner from the ACRIS sidecar, when published. */
+  owner_name?: string | null;
+  /** True when aerial change activity was observed in recent imagery. */
+  recent_change?: boolean | null;
   /** Top-K SHAP attributions for the parcel. Empty when SHAP is unavailable. */
   top_features: TopFeature[];
   /**
