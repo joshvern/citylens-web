@@ -378,6 +378,12 @@ export type ParcelIntelRow = {
   block_rank: number | null;
   /** Current deed owner from the ACRIS sidecar, when published. */
   owner_name?: string | null;
+  /** Detected building-change observations from the published CityLens index. */
+  change_added_count?: number;
+  change_demolished_count?: number;
+  change_modified_count?: number;
+  /** Imagery epoch of the latest detected physical change. */
+  change_latest_imagery_year?: number | null;
   /** True when aerial change activity was observed in recent imagery. */
   recent_change?: boolean | null;
   /** Top-K SHAP attributions for the parcel. Empty when SHAP is unavailable. */
