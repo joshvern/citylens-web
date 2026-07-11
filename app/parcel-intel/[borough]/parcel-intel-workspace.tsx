@@ -627,7 +627,10 @@ function ParcelDetailPanel({
         row.redev_status !== 'still_vacant') && (
         <div className="mt-3 flex flex-wrap gap-2">
           {row.recent_change && (
-            <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-900 ring-1 ring-inset ring-emerald-200">
+            <span
+              className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-900 ring-1 ring-inset ring-emerald-200"
+              title="Physical change observed in current aerial imagery compared with the 2017 baseline; verify the event date during diligence."
+            >
               Recently changed
             </span>
           )}
