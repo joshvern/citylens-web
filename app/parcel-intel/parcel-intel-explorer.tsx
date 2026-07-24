@@ -592,7 +592,7 @@ export function ParcelIntelExplorer({
               )}
               {isAuthenticated && (
                 <option value="environmental_review">
-                  E-designated lots
+                  E/R-designated lots
                 </option>
               )}
               {isAuthenticated && (
@@ -868,7 +868,7 @@ export function ParcelIntelExplorer({
                 }`}
               >
                 <div className="text-[11px] uppercase tracking-wide text-orange-700">
-                  E-designated lots
+                  E/R-designated lots
                 </div>
                 <div className="text-lg font-semibold text-orange-950">
                   {environmentalReviewParcelCount.toLocaleString()}

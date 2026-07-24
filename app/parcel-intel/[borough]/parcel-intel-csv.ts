@@ -136,7 +136,7 @@ const COLUMNS: Column[] = [
   },
   { header: 'Floodplain data retrieved', value: (r) => r.floodplain_data_as_of },
   {
-    header: 'Environmental review designation',
+    header: 'Environmental designation present',
     value: (r) =>
       r.environmental_review_required === null ||
       r.environmental_review_required === undefined
@@ -145,10 +145,17 @@ const COLUMNS: Column[] = [
           ? 'yes'
           : 'no',
   },
-  { header: 'E-designation number', value: (r) => r.e_designation_number },
   {
-    header: 'E-designation data retrieved',
-    value: (r) => r.e_designation_data_as_of,
+    header: 'Environmental designation type',
+    value: (r) => r.environmental_designation_kind,
+  },
+  {
+    header: 'Environmental designation number',
+    value: (r) => r.environmental_designation_number,
+  },
+  {
+    header: 'Environmental designation data retrieved',
+    value: (r) => r.environmental_designation_data_as_of,
   },
   { header: 'Owner', value: (r) => r.owner_name },
   { header: 'Owner source', value: (r) => r.owner_name_source },

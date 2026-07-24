@@ -214,7 +214,10 @@ function workflowSnapshot(
     floodplain_1pct: row.floodplain_1pct ?? null,
     environmental_review_required:
       row.environmental_review_required ?? null,
-    e_designation_number: row.e_designation_number ?? null,
+    environmental_designation_number:
+      row.environmental_designation_number ?? null,
+    environmental_designation_kind:
+      row.environmental_designation_kind ?? null,
     recent_change: row.recent_change ?? null,
   };
 }
@@ -241,6 +244,12 @@ export function ParcelIntelPropertyPanel({
   const hasFloodplainScreen =
     typeof row.firm07_floodplain === 'boolean' &&
     typeof row.pfirm15_floodplain === 'boolean';
+  const environmentalDesignationLabel =
+    row.environmental_designation_kind === 'restrictive_declaration'
+      ? 'restrictive declaration'
+      : row.environmental_designation_kind === 'e_designation'
+        ? 'E-designation'
+        : 'environmental designation';
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -840,7 +849,7 @@ export function ParcelIntelPropertyPanel({
                           : 'text-slate-800'
                       }`}
                     >
-                      Environmental review designation
+                      Environmental designation
                     </h4>
                     <p
                       className={`mt-1 text-xs leading-5 ${
@@ -850,10 +859,11 @@ export function ParcelIntelPropertyPanel({
                       }`}
                     >
                       {row.environmental_review_required
-                        ? `PLUTO lists E-designation ${
-                            row.e_designation_number ?? 'number unavailable'
+                        ? `PLUTO lists ${environmentalDesignationLabel} ${
+                            row.environmental_designation_number ??
+                            'number unavailable'
                           } for this tax lot.`
-                        : 'PLUTO does not list an E-designation for this tax lot.'}
+                        : 'PLUTO does not list an E-designation or restrictive declaration for this tax lot.'}
                     </p>
                   </div>
                   <span
@@ -864,7 +874,7 @@ export function ParcelIntelPropertyPanel({
                     }`}
                   >
                     {row.environmental_review_required
-                      ? row.e_designation_number ?? 'Review required'
+                      ? row.environmental_designation_number ?? 'Review required'
                       : 'No PLUTO flag'}
                   </span>
                 </div>
@@ -875,13 +885,13 @@ export function ParcelIntelPropertyPanel({
                       : 'text-slate-600'
                   }`}
                 >
-                  An E-designation can concern hazardous materials, air
-                  emissions, or noise. It is not proof of contamination or an
-                  automatic development prohibition. Confirm the designation,
-                  the proposed-work trigger, and required OER notices with an
-                  environmental professional
-                  {row.e_designation_data_as_of
-                    ? ` · PLUTO retrieved ${row.e_designation_data_as_of}`
+                  E-designations and restrictive declarations can concern
+                  hazardous materials, air emissions, or noise. Neither is
+                  proof of contamination or an automatic development
+                  prohibition. Confirm the instrument, proposed-work trigger,
+                  and required OER notices with an environmental professional
+                  {row.environmental_designation_data_as_of
+                    ? ` · PLUTO retrieved ${row.environmental_designation_data_as_of}`
                     : ''}
                   .
                 </p>

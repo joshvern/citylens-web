@@ -414,12 +414,17 @@ export type ParcelIntelRow = {
   floodplain_1pct?: boolean | null;
   floodplain_data_as_of?: string | null;
   /**
-   * Current PLUTO E-designation notice. It can concern hazardous materials,
-   * air, or noise and is not proof of contamination.
+   * Current PLUTO E-designation or restrictive-declaration notice. It can
+   * concern hazardous materials, air, or noise and is not contamination proof.
    */
   environmental_review_required?: boolean | null;
-  e_designation_number?: string | null;
-  e_designation_data_as_of?: string | null;
+  environmental_designation_number?: string | null;
+  environmental_designation_kind?:
+    | 'e_designation'
+    | 'restrictive_declaration'
+    | 'other'
+    | null;
+  environmental_designation_data_as_of?: string | null;
   is_landmark: boolean;
   is_historic_district: boolean;
   block_id: string | null;
@@ -610,7 +615,12 @@ export type ParcelWorkflowSnapshot = {
   critical_violation_count: number | null;
   floodplain_1pct: boolean | null;
   environmental_review_required: boolean | null;
-  e_designation_number: string | null;
+  environmental_designation_number: string | null;
+  environmental_designation_kind:
+    | 'e_designation'
+    | 'restrictive_declaration'
+    | 'other'
+    | null;
   recent_change: boolean | null;
 };
 

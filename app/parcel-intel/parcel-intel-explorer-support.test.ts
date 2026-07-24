@@ -182,13 +182,14 @@ describe('parcel citywide explorer support', () => {
     ).toEqual(['overlap']);
   });
 
-  it('filters parcels with a current PLUTO E-designation', () => {
+  it('filters parcels with a current PLUTO environmental designation', () => {
     const rows = [
       row({ bbl: 'none', environmental_review_required: false }),
       row({
         bbl: 'review',
         environmental_review_required: true,
-        e_designation_number: 'E-442',
+        environmental_designation_number: 'R-14',
+        environmental_designation_kind: 'restrictive_declaration',
       }),
       row({ bbl: 'not-loaded', environmental_review_required: null }),
     ];
