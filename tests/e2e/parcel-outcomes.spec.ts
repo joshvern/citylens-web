@@ -635,7 +635,7 @@ test('authenticated parcel explorer shows maturity-qualified outcome evidence', 
     'not a purchase recommendation',
   );
   await page
-    .getByRole('button', { name: 'Use this as the first action' })
+    .getByRole('button', { name: 'Review workflow' })
     .click();
   await expect(
     page.getByRole('textbox', { name: 'Next action', exact: true }),
