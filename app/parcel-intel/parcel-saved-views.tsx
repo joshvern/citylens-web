@@ -224,6 +224,7 @@ export function ParcelSavedViewsPanel({
           </div>
           <button
             type="button"
+            data-testid="saved-view-save"
             onClick={() => void saveCurrentView()}
             disabled={!name.trim() || saving}
             className="mt-4 inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-lg bg-white px-4 text-xs font-semibold text-slate-950 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"

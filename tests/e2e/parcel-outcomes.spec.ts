@@ -657,7 +657,7 @@ test('authenticated parcel explorer shows maturity-qualified outcome evidence', 
   await page.getByRole('button', { name: 'Saved views' }).click();
   await page.getByLabel('View name').fill('Priority follow-up');
   await page.getByRole('button', { name: 'Save current view' }).click();
-  await expect(page.getByRole('button', { name: 'Saved' })).toBeVisible();
+  await expect(page.getByTestId('saved-view-save')).toHaveText('Saved');
   await expect(page.getByText('Priority follow-up')).toBeVisible();
   await page
     .getByRole('button', { name: 'Delete saved view Priority follow-up' })
