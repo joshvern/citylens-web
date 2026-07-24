@@ -182,6 +182,25 @@ describe('parcel citywide explorer support', () => {
     ).toEqual(['overlap']);
   });
 
+  it('filters parcels with a current PLUTO E-designation', () => {
+    const rows = [
+      row({ bbl: 'none', environmental_review_required: false }),
+      row({
+        bbl: 'review',
+        environmental_review_required: true,
+        e_designation_number: 'E-442',
+      }),
+      row({ bbl: 'not-loaded', environmental_review_required: null }),
+    ];
+
+    expect(
+      filterExplorerRows(rows, {
+        ...filters,
+        opportunity: 'environmental_review',
+      }).map((item) => item.bbl),
+    ).toEqual(['review']);
+  });
+
   it('filters multi-lot legal-owner portfolios without changing rank order', () => {
     const rows = [
       row({ bbl: 'single', owner_portfolio_lot_count: 1 }),

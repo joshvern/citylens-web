@@ -55,7 +55,8 @@ const EXPECTED_HEADER =
   'OATH ECB latest issue,HPD open violations,HPD Class C violations,HPD latest inspection,' +
   'Immediate-hazard violations,Violation data retrieved,FEMA 2007 FIRM 1% tax-lot overlap,' +
   'FEMA 2015 PFIRM 1% tax-lot overlap,Any 1% floodplain tax-lot overlap,' +
-  'Floodplain data retrieved,Owner,Owner source,PLUTO owner type,' +
+  'Floodplain data retrieved,Environmental review designation,E-designation number,' +
+  'E-designation data retrieved,Owner,Owner source,PLUTO owner type,' +
   'Owner entity type,Owner portfolio ID,Owner portfolio tax lots,' +
   'Owner portfolio boroughs,Owner portfolio lot area (sqft),' +
   'Owner portfolio current leads,Owner portfolio match method,' +
@@ -149,6 +150,24 @@ describe('buildCsv', () => {
     const body = csv.split('\n')[1];
     // Semicolons (not commas) join factors, so the column needs no quoting.
     expect(body.endsWith(',lot_area (+32%); zoning_district (-18%)')).toBe(true);
+  });
+
+  it('exports the current E-designation as diligence, not a rank signal', () => {
+    const csv = buildCsv([
+      row({
+        environmental_review_required: true,
+        e_designation_number: 'E-442',
+        e_designation_data_as_of: '2026-07-24',
+      }),
+    ]);
+    const headers = EXPECTED_HEADER.split(',');
+    const cells = csv.split('\n')[1].split(',');
+    expect(cells[headers.indexOf('Environmental review designation')]).toBe('yes');
+    expect(cells[headers.indexOf('E-designation number')]).toBe('E-442');
+    expect(cells[headers.indexOf('E-designation data retrieved')]).toBe(
+      '2026-07-24',
+    );
+    expect(cells[headers.indexOf('NYC acquisition rank')]).toBe('1');
   });
 
   it('never invents a rank for an excluded high-scoring parcel', () => {

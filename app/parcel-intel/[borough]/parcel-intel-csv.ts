@@ -135,6 +135,21 @@ const COLUMNS: Column[] = [
           : 'no',
   },
   { header: 'Floodplain data retrieved', value: (r) => r.floodplain_data_as_of },
+  {
+    header: 'Environmental review designation',
+    value: (r) =>
+      r.environmental_review_required === null ||
+      r.environmental_review_required === undefined
+        ? null
+        : r.environmental_review_required
+          ? 'yes'
+          : 'no',
+  },
+  { header: 'E-designation number', value: (r) => r.e_designation_number },
+  {
+    header: 'E-designation data retrieved',
+    value: (r) => r.e_designation_data_as_of,
+  },
   { header: 'Owner', value: (r) => r.owner_name },
   { header: 'Owner source', value: (r) => r.owner_name_source },
   { header: 'PLUTO owner type', value: (r) => r.owner_type },

@@ -221,6 +221,31 @@ describe('ParcelIntelPropertyPanel', () => {
     );
   });
 
+  it('explains E-designations without claiming contamination', () => {
+    render(
+      <ParcelIntelPropertyPanel
+        row={{
+          ...parcel,
+          environmental_review_required: true,
+          e_designation_number: 'E-442',
+          e_designation_data_as_of: '2026-07-23',
+        }}
+        onClose={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(/Environmental review designation/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/PLUTO lists E-designation E-442/i)).toBeInTheDocument();
+    expect(screen.getByText(/not proof of contamination/i)).toBeInTheDocument();
+    expect(screen.getByText(/PLUTO retrieved 2026-07-23/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /NYC OER guidance/i })).toHaveAttribute(
+      'href',
+      'https://www.nyc.gov/site/oer/remediation/e-designation.page',
+    );
+  });
+
   it('shows conservative current-owner portfolio context and can focus it', () => {
     const onViewOwnerPortfolio = vi.fn();
     render(
