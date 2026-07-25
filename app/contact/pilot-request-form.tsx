@@ -220,6 +220,7 @@ export function PilotRequestForm({
             return (
               <label
                 key={borough.value}
+                data-testid={`pilot-borough-${borough.value}`}
                 className={`cursor-pointer rounded-full border px-3 py-2 text-xs font-medium transition ${
                   selected
                     ? 'border-sky-500 bg-sky-50 text-sky-900'

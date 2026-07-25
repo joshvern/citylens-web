@@ -33,8 +33,10 @@ test('prospective team can submit a private, retry-safe pilot request', async ({
   await page.getByLabel('Work email').fill('jordan@example.com');
   await page.getByLabel('Company').fill('Example Development');
   await page.getByLabel('Role').fill('Acquisitions director');
-  await page.getByLabel('Brooklyn').check();
-  await page.getByLabel('Queens').check();
+  await page.getByTestId('pilot-borough-brooklyn').click();
+  await page.getByTestId('pilot-borough-queens').click();
+  await expect(page.getByLabel('Brooklyn')).toBeChecked();
+  await expect(page.getByLabel('Queens')).toBeChecked();
   await page
     .getByLabel('What does your acquisition workflow look like today?')
     .fill(
