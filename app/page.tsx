@@ -96,7 +96,7 @@ export default async function HomePage() {
                 Request a working session
               </Link>
             </div>
-            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-400">
+            <div className="mt-6 hidden flex-wrap gap-x-5 gap-y-2 text-xs text-slate-400 sm:flex">
               {[
                 'Public market preview',
                 'Source-dated decisions',
