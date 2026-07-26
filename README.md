@@ -25,6 +25,15 @@ published project leakage; source freshness; and PAD/PLUTO address provenance.
 The receipt fails conservative when those release checks are absent or failed.
 It is an auditable feed-eligibility statement—not model accuracy, seller
 intent, transaction probability, or completed parcel diligence.
+The selected overview also offers up to three deterministic **decision peers**
+from the currently loaded governed inventory. Peers must already pass the
+acquisition screen and are ordered from displayed zoning, opportunity,
+borough, lot-area, built-utilization, and unused-FAR-proxy facts. The UI shows
+the concrete match reasons, never exposes an invented similarity/confidence
+score, and labels the set as screening peers rather than valuation or sale
+comps. Users can open a peer in place or launch a focused 1:1 evidence
+comparison; public users match only within the 125-row preview, while a
+verified authenticated workspace matches across all 5,000 published leads.
 Users can place up to three fully loaded parcels into an evidence comparison
 desk without leaving the explorer. The desk keeps current acquisition posture,
 capacity, ownership/sale context, official project activity, surfaced diligence
@@ -316,7 +325,7 @@ never includes a BBL, address, owner, URL, notes, tags, assignee, contact,
 underwriting value, cost, margin, efficiency, or free text. Parcel opens,
 comparison-desk opens, decision-audit opens, Underwrite-tab opens, first
 assumption adjustments, and saved-view applies are coarse directional events.
-Comparison-desk and saved-screen-comparison events contain no parcel
+Comparison-desk, decision-peer entry, and saved-screen-comparison events contain no parcel
 identifiers, saved-view identity, filters, criteria, thresholds, search text,
 result counts, overlap/union measures, or compared values.
 Decision-audit opens identify only whether the posture card or Audit tab was
