@@ -195,6 +195,51 @@ function ReceiptBody({
   );
 }
 
+function ReceiptSummary({ receipt }: { receipt: Receipt }) {
+  const verified = receipt.passed === true;
+
+  return (
+    <div className="flex min-w-0 items-center justify-between gap-3">
+      <span className="flex min-w-0 items-center gap-2.5">
+        {verified ? (
+          <BadgeCheck className="h-4 w-4 shrink-0 text-emerald-300" />
+        ) : (
+          <CircleAlert className="h-4 w-4 shrink-0 text-amber-300" />
+        )}
+        <span className="min-w-0">
+          <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+            Qualification receipt
+          </span>
+          <span className="block truncate text-xs font-semibold text-white">
+            {verified
+              ? `${formatCount(receipt.published)} leads · ${formatCount(
+                  receipt.evaluated,
+                )} evaluated · ${formatCount(receipt.projectLeakage)} leaks`
+              : 'Feed verification unavailable'}
+          </span>
+        </span>
+      </span>
+      <span className="flex shrink-0 items-center gap-2">
+        <span
+          className={`rounded-full px-2 py-1 text-[10px] font-semibold ring-1 ring-inset ${
+            verified
+              ? 'bg-emerald-400/10 text-emerald-200 ring-emerald-300/20'
+              : 'bg-amber-400/10 text-amber-200 ring-amber-300/20'
+          }`}
+        >
+          {verified ? 'Passed' : 'Inspect'}
+        </span>
+        <span className="text-[10px] font-medium text-sky-300 group-open:hidden">
+          Details
+        </span>
+        <span className="hidden text-[10px] font-medium text-sky-300 group-open:inline">
+          Close
+        </span>
+      </span>
+    </div>
+  );
+}
+
 export function ParcelFeedReceipt({
   qualityGate = {},
   dataSources = {},
@@ -224,13 +269,18 @@ export function ParcelFeedReceipt({
         </div>
       </details>
 
-      <section
-        className="hidden overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_top_right,_rgba(14,165,233,0.22),_transparent_44%),linear-gradient(135deg,#020617,#0f172a)] p-4 shadow-xl ring-1 ring-inset ring-white/10 sm:block"
+      <details
+        className="group hidden overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_top_right,_rgba(14,165,233,0.22),_transparent_44%),linear-gradient(135deg,#020617,#0f172a)] shadow-xl ring-1 ring-inset ring-white/10 sm:block"
         aria-label="Current shortlist qualification receipt"
         data-testid="parcel-feed-receipt"
       >
-        <ReceiptBody receipt={receipt} generatedLabel={generatedLabel} />
-      </section>
+        <summary className="cursor-pointer list-none px-4 py-3 marker:hidden">
+          <ReceiptSummary receipt={receipt} />
+        </summary>
+        <div className="border-t border-white/10 px-4 py-3">
+          <ReceiptBody receipt={receipt} generatedLabel={generatedLabel} />
+        </div>
+      </details>
     </>
   );
 }
