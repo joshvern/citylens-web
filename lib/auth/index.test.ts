@@ -9,13 +9,13 @@ describe('selectAuthProvider', () => {
   });
 
   it('uses Neon for production when the provider is omitted', () => {
-    expect(selectAuthProvider(undefined, undefined, 'production')).toBe('neon');
+    expect(selectAuthProvider('', undefined, 'production')).toBe('neon');
   });
 
   it('uses Neon when local web development targets a deployed API', () => {
     expect(
       selectAuthProvider(
-        undefined,
+        '',
         'https://api.citylens.dev',
         'development',
       ),
@@ -24,7 +24,7 @@ describe('selectAuthProvider', () => {
 
   it('keeps mock auth for a local development API', () => {
     expect(
-      selectAuthProvider(undefined, 'http://localhost:8000', 'development'),
+      selectAuthProvider('', 'http://localhost:8000', 'development'),
     ).toBe('mock');
   });
 });
