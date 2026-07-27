@@ -37,7 +37,10 @@ if (!Number.isSafeInteger(expectedCount) || expectedCount <= 0) {
 await fs.mkdir(outputDir, { recursive: true });
 
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const context = await browser.newContext({
+  viewport: { width: 1440, height: 900 },
+});
+const page = await context.newPage();
 const mapReceipts = [];
 const authTokenReceipts = [];
 const consoleErrors = [];
@@ -299,7 +302,7 @@ try {
     );
   }
 
-  const mobilePage = await page.context().newPage();
+  const mobilePage = await context.newPage();
   mobilePage.on('console', (message) => {
     if (message.type() === 'error') {
       consoleErrors.push(`[mobile] ${message.text()}`);
