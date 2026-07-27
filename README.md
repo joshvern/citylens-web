@@ -429,7 +429,9 @@ The separate
 uses a dedicated least-privilege Neon smoke user every six hours. It signs in
 through the production UI and fails unless the rendered explorer and observed
 API receipt both reach exactly 5,000 authenticated, mappable parcels with no
-browser errors. Its email and password live only in the
+browser errors. It also verifies the live Ovington exact-BBL dossier,
+official-address resolution, and current screening receipt while reporting
+only pass/fail booleans. Its email and password live only in the
 `CITYLENS_WEB_SMOKE_EMAIL` and `CITYLENS_WEB_SMOKE_PASSWORD` GitHub Actions
 secrets; reports contain neither value, JWTs, parcel identifiers, nor owner
 data.
