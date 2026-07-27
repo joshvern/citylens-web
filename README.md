@@ -140,6 +140,16 @@ from a private resolver that is independent of lead membership. One exact lot
 can proceed to the existing screening receipt, while multiple lots require an
 explicit user choice and no match remains an honest no-match. The UI never
 fuzzy-matches an address or silently guesses a tax lot.
+After an authenticated BBL or exact address match is selected, the explorer
+loads a separate official parcel dossier for that tax lot—even when it is not
+one of the 5,000 ranked leads. The dossier shows source-dated PLUTO physical,
+mapped-zoning, assessment, flood, and environmental facts beside
+source-specific ACRIS deed/recorded-owner facts and official NYC links.
+PLUTO/ACRIS owner disagreement remains visible. The panel explicitly says it
+is not a lead score, title report, appraisal, zoning calculation, feasibility
+study, beneficial-owner determination, or seller-intent signal. The existing
+screening receipt follows it and separately explains whether the parcel was
+published, below cutoff, excluded, or not evaluated.
 The browser mints the API Bearer JWT through the same-origin
 `/api/auth/token` route using the authoritative HttpOnly Neon session cookie.
 The Neon client helper remains only a fallback: a cached visual session is not
@@ -321,6 +331,9 @@ This frontend aligns to the CityLens API contract served by `citylens-engine`:
 - `POST /v1/parcel-intel/resolve-address` — Bearer-authenticated,
   rate-limited exact official-address-to-BBL resolution; private/no-store and
   never returns the submitted address
+- `GET  /v1/parcel-intel/official-parcel/{bbl}` — Bearer-authenticated,
+  rate-limited, source-dated official dossier for one current NYC PLUTO tax
+  lot; private/no-store and independent of lead membership
 - `GET  /v1/demo/featured`, `GET /v1/demo/runs/{run_id}` — public demo endpoints
 - `POST /v1/runs` — Bearer auth required (the engine narrowly validates the public
   request shape; sam2/aoi defaults are server-injected)
