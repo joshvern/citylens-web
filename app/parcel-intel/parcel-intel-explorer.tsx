@@ -1681,7 +1681,6 @@ export function ParcelIntelExplorer({
                 <button
                   type="button"
                   onClick={openActionQueue}
-                  aria-controls="parcel-action-queue"
                   className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-violet-700 px-4 text-xs font-semibold text-white shadow-sm hover:bg-violet-800"
                 >
                   Review {workflowActions.attention_count}{' '}

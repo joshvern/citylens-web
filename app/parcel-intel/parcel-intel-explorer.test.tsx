@@ -1214,7 +1214,11 @@ describe('ParcelIntelExplorer', () => {
     render(<ParcelIntelExplorer boroughs={boroughs} />);
 
     await screen.findByTestId('activation-guide-attention');
-    fireEvent.click(screen.getByRole('button', { name: 'Review 2 actions' }));
+    const reviewActions = screen.getByRole('button', {
+      name: 'Review 2 actions',
+    });
+    expect(reviewActions).not.toHaveAttribute('aria-controls');
+    fireEvent.click(reviewActions);
 
     expect(
       await screen.findByRole('heading', {
