@@ -959,7 +959,7 @@ test('authenticated parcel explorer shows maturity-qualified outcome evidence', 
     .getByRole('button', { name: /Compose an acquisition thesis/i })
     .click();
   await page
-    .getByLabel('Acquisition thesis')
+    .getByRole('textbox', { name: 'Acquisition thesis' })
     .fill(
       'Highest-priority ground-up sites in Brooklyn near transit with at least 5,000 sf lots',
     );
