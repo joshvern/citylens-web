@@ -928,16 +928,20 @@ export function ParcelIntelExplorer({
       throw new Error('Selected parcel detail is unavailable');
     }
     const subject = selectedDetail;
+    // Capture the invoking button before the async detail fetch. The peer
+    // control disables itself while loading, and Chromium may move focus away
+    // from a disabled control before the request resolves.
+    const returnFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     const peerDetail = await getParcelIntelParcel(peer.bbl, {
       includeAuth: isAuthenticated,
     });
     if (selectedBblRef.current !== subject.bbl) {
       throw new Error('Selected parcel changed while preparing comparison');
     }
-    comparisonReturnFocusRef.current =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
+    comparisonReturnFocusRef.current = returnFocus;
     setComparisonRows([
       subject,
       { ...peerDetail, borough: peer.borough },

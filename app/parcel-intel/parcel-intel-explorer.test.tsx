@@ -1255,11 +1255,11 @@ describe('ParcelIntelExplorer', () => {
       ),
     );
 
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: 'Compare first decision peer',
-      }),
-    );
+    const comparePeer = screen.getByRole('button', {
+      name: 'Compare first decision peer',
+    });
+    comparePeer.focus();
+    fireEvent.click(comparePeer);
 
     const desk = await screen.findByTestId('parcel-comparison-desk');
     expect(desk).toHaveTextContent('MN test site');
@@ -1277,6 +1277,8 @@ describe('ParcelIntelExplorer', () => {
     expect(
       JSON.stringify(mocks.recordParcelProductEvent.mock.calls),
     ).not.toMatch(/1000010001|3000010001|test site/i);
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    await waitFor(() => expect(comparePeer).toHaveFocus());
   });
 
   it('opens a decision peer without including parcel identity in telemetry', async () => {
