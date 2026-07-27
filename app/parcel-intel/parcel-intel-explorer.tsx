@@ -74,6 +74,7 @@ import { ParcelWorkflowAlertsPanel } from './parcel-workflow-alerts';
 import { ParcelWorkflowActionsPanel } from './parcel-workflow-actions';
 import { ParcelSavedViewsPanel } from './parcel-saved-views';
 import { ParcelScreenAudit } from './parcel-screen-audit';
+import { ParcelThesisComposer } from './parcel-thesis-composer';
 import {
   canonicalParcelBbl,
   ParcelScreeningLookup,
@@ -1180,6 +1181,23 @@ export function ParcelIntelExplorer({
     });
   };
 
+  const applyThesisFilters = (next: ExplorerFilters) => {
+    setFilters(next);
+    setLeadLimit(INITIAL_LEAD_LIMIT);
+    setMobileRankingExpanded(false);
+    setSelectedBbl(null);
+    setSignalFiltersOpen(false);
+    setSiteCriteriaOpen(false);
+    syncExplorerUrl(next.borough, null);
+    void recordParcelProductEvent(
+      'thesis_composer_applied',
+      'thesis_composer',
+    ).catch(() => {
+      // The browser-local composer remains usable when coarse,
+      // value-minimized adoption telemetry is unavailable.
+    });
+  };
+
   const trackSavedViewComparisonOpen = () => {
     if (savedViewComparisonOpenTrackedRef.current) return;
     savedViewComparisonOpenTrackedRef.current = true;
@@ -1697,6 +1715,19 @@ export function ParcelIntelExplorer({
         </div>
       )}
 
+      {isAuthenticated && (
+        <ParcelThesisComposer
+          currentFilters={filters}
+          inventoryRows={rows}
+          inventoryReady={
+            loadState === 'ready' &&
+            fullInventoryReady &&
+            failedBoroughs.length === 0
+          }
+          onApply={applyThesisFilters}
+        />
+      )}
+
       <div className="border-b border-slate-200 bg-slate-50 px-4 py-3.5 md:px-6">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-[minmax(185px,1fr)_minmax(120px,0.65fr)_minmax(120px,0.65fr)_minmax(185px,1fr)_auto]">
           <label className="relative sm:col-span-2 xl:col-span-1">
@@ -1765,6 +1796,11 @@ export function ParcelIntelExplorer({
                 setSignalFiltersOpen((value) => !value);
                 setSiteCriteriaOpen(false);
               }}
+              aria-label={
+                filters.signals.length > 0
+                  ? `Signals (${filters.signals.length} active)`
+                  : 'Signals'
+              }
               aria-expanded={signalFiltersOpen}
               aria-controls="parcel-signal-filters"
               className={`inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border px-3 text-xs font-semibold ${
@@ -1996,6 +2032,14 @@ export function ParcelIntelExplorer({
                   className="mt-2 h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
                 >
                   <option value="">Any PLUTO lot area</option>
+                  {filters.minLotAreaSqft !== null &&
+                    !LOT_AREA_THRESHOLDS_SQFT.includes(
+                      filters.minLotAreaSqft,
+                    ) && (
+                      <option value={filters.minLotAreaSqft}>
+                        {filters.minLotAreaSqft.toLocaleString()}+ sf (reviewed)
+                      </option>
+                    )}
                   {LOT_AREA_THRESHOLDS_SQFT.map((value) => (
                     <option key={value} value={value}>
                       {value.toLocaleString()}+ sf
@@ -2024,6 +2068,15 @@ export function ParcelIntelExplorer({
                   className="mt-2 h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
                 >
                   <option value="">Any unused-FAR proxy</option>
+                  {filters.minUnusedFloorAreaSqft !== null &&
+                    !UNUSED_FAR_THRESHOLDS_SQFT.includes(
+                      filters.minUnusedFloorAreaSqft,
+                    ) && (
+                      <option value={filters.minUnusedFloorAreaSqft}>
+                        {filters.minUnusedFloorAreaSqft.toLocaleString()}+ sf
+                        (reviewed)
+                      </option>
+                    )}
                   {UNUSED_FAR_THRESHOLDS_SQFT.map((value) => (
                     <option key={value} value={value}>
                       {value.toLocaleString()}+ sf
