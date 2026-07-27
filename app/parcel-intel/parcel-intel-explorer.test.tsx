@@ -100,7 +100,7 @@ vi.mock('./parcel-intel-property-panel', () => ({
         {decisionPeers?.length ?? 0} peers:
         {peerInventoryComplete ? 'full' : 'preview'}
       </span>
-      <button type="button" onClick={onClose}>
+      <button type="button" autoFocus onClick={onClose}>
         Back to ranking
       </button>
       <button
@@ -1118,6 +1118,29 @@ describe('ParcelIntelExplorer', () => {
     expect(mocks.routerReplace).toHaveBeenLastCalledWith('/parcel-intel', {
       scroll: false,
     });
+  });
+
+  it('moves focus into parcel evidence and restores the recreated ranking row', async () => {
+    render(<ParcelIntelExplorer boroughs={boroughs} />);
+
+    const brooklynLead = await screen.findByRole('button', {
+      name: /brooklyn test site/i,
+    });
+    brooklynLead.focus();
+    expect(brooklynLead).toHaveFocus();
+    fireEvent.click(brooklynLead);
+
+    const back = await screen.findByRole('button', {
+      name: 'Back to ranking',
+    });
+    expect(back).toHaveFocus();
+    fireEvent.click(back);
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('button', { name: /brooklyn test site/i }),
+      ).toHaveFocus(),
+    );
   });
 
   it('records one coarse authenticated parcel open without parcel identifiers', async () => {
