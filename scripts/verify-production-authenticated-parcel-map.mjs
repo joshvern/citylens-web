@@ -328,6 +328,9 @@ try {
   const mobileMarketFilters = mobilePage.getByRole('button', {
     name: 'Market filters',
   });
+  const mobileWorkspaceTools = mobilePage.getByRole('button', {
+    name: 'Workspace tools',
+  });
   const mobileMapBounds = await mobileMap.boundingBox();
   mobileWorkspaceReceipt = {
     access_status: (await mobileAccessStatus.textContent())?.trim() ?? null,
@@ -342,13 +345,18 @@ try {
     market_filters_visible: await mobileMarketFilters.isVisible(),
     market_filters_collapsed:
       (await mobileMarketFilters.getAttribute('aria-expanded')) === 'false',
+    workspace_tools_visible: await mobileWorkspaceTools.isVisible(),
+    workspace_tools_collapsed:
+      (await mobileWorkspaceTools.getAttribute('aria-expanded')) === 'false',
     map_top_px: mobileMapBounds ? Math.round(mobileMapBounds.y) : null,
   };
   if (
     mobileWorkspaceReceipt.access_status !== 'Full access' ||
     mobileWorkspaceReceipt.match_count !== expectedCount ||
     mobileWorkspaceReceipt.market_filters_visible !== true ||
-    mobileWorkspaceReceipt.market_filters_collapsed !== true
+    mobileWorkspaceReceipt.market_filters_collapsed !== true ||
+    mobileWorkspaceReceipt.workspace_tools_visible !== true ||
+    mobileWorkspaceReceipt.workspace_tools_collapsed !== true
   ) {
     throw new Error(
       `Unexpected mobile workspace receipt: ${JSON.stringify(mobileWorkspaceReceipt)}.`,
