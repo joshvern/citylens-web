@@ -121,8 +121,11 @@ The upgrade is fail-closed: authenticated map reads bypass the public HTTP
 cache and must carry an internally consistent full-inventory receipt from the
 API. Until that receipt is verified, the interface labels the loaded count as
 incomplete, keeps full-inventory saved-view actions disabled, and offers an
-authenticated retry instead of presenting the 125-row preview as the complete
-workspace.
+authenticated retry or account reconnection instead of presenting the 125-row
+preview as the complete workspace. A visible browser session alone is not
+treated as data authorization: the production receipt separately proves that
+the session minted a JWT and that the API returned the complete 5,000-row
+inventory.
 For a canonical 10-digit BBL that is absent after that full inventory receipt
 is verified, the signed-in explorer offers an explicit screening lookup
 instead of silently returning zero results. The resulting private receipt
@@ -443,9 +446,12 @@ The separate
 uses a dedicated least-privilege Neon smoke user every six hours. It signs in
 through the production UI and fails unless the rendered explorer and observed
 API receipt both reach exactly 5,000 authenticated, mappable parcels with no
-browser errors. It also verifies the live Ovington exact-BBL dossier,
-source-grounded evidence readiness, official-address resolution, and current
-screening receipt while reporting only pass/fail booleans. Its email and password live only in the
+browser errors. It separately records successful API-credential minting, so a
+stale session cannot pass by rendering the 125-row public preview. It also
+verifies the auditable historical benchmark receipt and its limitations, the
+live Ovington exact-BBL dossier, source-grounded evidence readiness,
+official-address resolution, and current screening receipt while reporting
+only pass/fail booleans. Its email and password live only in the
 `CITYLENS_WEB_SMOKE_EMAIL` and `CITYLENS_WEB_SMOKE_PASSWORD` GitHub Actions
 secrets; reports contain neither value, JWTs, parcel identifiers, nor owner
 data.
