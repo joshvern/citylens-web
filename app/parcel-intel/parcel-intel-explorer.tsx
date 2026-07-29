@@ -1433,21 +1433,24 @@ export function ParcelIntelExplorer({
           <div className="grid grid-cols-3 gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-[10px] text-slate-300 sm:hidden">
             <span>
               <strong className="text-sm text-white">
-                {loadState === 'ready'
-                  ? inventoryState === 'upgrading'
-                    ? `${rows.length.toLocaleString()} preview`
-                    : rows.length.toLocaleString()
-                  : '…'}
+                {inventoryState === 'upgrading'
+                  ? '…'
+                  : inventoryState === 'incomplete'
+                    ? '—'
+                    : loadState === 'ready'
+                      ? rows.length.toLocaleString()
+                      : '…'}
               </strong>{' '}
               loaded
             </span>
             <span>
               <strong className="text-sm text-white">
-                {loadState === 'ready'
-                  ? inventoryState === 'upgrading'
-                    ? '…'
-                    : filtered.length.toLocaleString()
-                  : '…'}
+                {inventoryState === 'upgrading' ||
+                inventoryState === 'incomplete'
+                  ? '…'
+                  : loadState === 'ready'
+                    ? filtered.length.toLocaleString()
+                    : '…'}
               </strong>{' '}
               matches
             </span>
@@ -1479,25 +1482,23 @@ export function ParcelIntelExplorer({
               ['Boroughs', boroughs.length.toString()],
               [
                 'Loaded',
-                loadState === 'ready'
-                  ? inventoryState === 'upgrading'
-                    ? `${rows.length.toLocaleString()} preview`
-                    : inventoryState === 'incomplete'
-                      ? `${rows.length.toLocaleString()} ${
-                          inventoryIssue === 'auth' ? 'preview' : 'partial'
-                        }`
-                    : rows.length.toLocaleString()
-                  : 'Loading…',
+                inventoryState === 'upgrading'
+                  ? 'Verifying…'
+                  : inventoryState === 'incomplete'
+                    ? 'Withheld'
+                    : loadState === 'ready'
+                      ? rows.length.toLocaleString()
+                      : 'Loading…',
               ],
               [
                 'Matches',
-                loadState === 'ready'
-                  ? inventoryState === 'upgrading'
-                    ? 'Rechecking…'
-                    : inventoryState === 'incomplete'
-                      ? `${filtered.length.toLocaleString()} partial`
-                    : filtered.length.toLocaleString()
-                  : 'Loading…',
+                inventoryState === 'upgrading'
+                  ? 'Rechecking…'
+                  : inventoryState === 'incomplete'
+                    ? 'Awaiting access'
+                    : loadState === 'ready'
+                      ? filtered.length.toLocaleString()
+                      : 'Loading…',
               ],
               ['Available', totalAvailable.toLocaleString()],
             ].map(([label, value]) => (
