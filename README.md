@@ -507,6 +507,13 @@ Local dev defaults to the `mock` auth provider so the build runs with no real
 Neon Auth keys. Set `NEXT_PUBLIC_AUTH_PROVIDER=neon` (and the `NEON_AUTH_*`
 env vars) to exercise the production auth flow against your Neon project.
 
+Browser authentication is origin-scoped. Signing in at
+`https://www.citylens.dev` does not sign the same browser into
+`http://localhost:3000`; use `/sign-in?next=%2Fparcel-intel` on the local
+origin as well. The accepted local receipt is `Full inventory · 5,000
+loaded`. A `Public preview · 125 of 5,000 loaded` receipt means that specific
+origin is still signed out.
+
 ## Tests
 
 ```bash
