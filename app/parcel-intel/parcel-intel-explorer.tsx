@@ -1612,7 +1612,7 @@ export function ParcelIntelExplorer({
           )}
           <div
             id="parcel-mobile-workspace-tools"
-            className={`flex-wrap items-center justify-end gap-2 text-xs text-slate-300 ${
+            className={`flex-wrap items-center justify-end gap-3 text-xs text-slate-300 ${
               isAuthenticated && !mobileWorkspaceToolsOpen ? 'hidden' : 'flex'
             } sm:flex`}
           >
@@ -1661,7 +1661,7 @@ export function ParcelIntelExplorer({
                 aria-expanded={savedViewsOpen}
                 aria-controls="parcel-saved-views-panel"
                 data-tool-panel-trigger="saved"
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-medium text-white hover:bg-white/15"
+                className="inline-flex h-11 items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-medium text-white hover:bg-white/15"
               >
                 <Bookmark className="h-3.5 w-3.5 text-amber-300" />
                 Saved views
@@ -1680,7 +1680,7 @@ export function ParcelIntelExplorer({
                 aria-expanded={actionsOpen}
                 aria-controls="parcel-action-queue"
                 data-tool-panel-trigger="actions"
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-medium text-white hover:bg-white/15"
+                className="inline-flex h-11 items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-medium text-white hover:bg-white/15"
               >
                 <CalendarClock className="h-3.5 w-3.5 text-violet-300" />
                 Action queue
@@ -1709,7 +1709,7 @@ export function ParcelIntelExplorer({
                 aria-expanded={alertsOpen}
                 aria-controls="parcel-evidence-changes"
                 data-tool-panel-trigger="alerts"
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-medium text-white hover:bg-white/15"
+                className="inline-flex h-11 items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-medium text-white hover:bg-white/15"
               >
                 <BellRing className="h-3.5 w-3.5 text-sky-300" />
                 Evidence changes
@@ -1730,7 +1730,7 @@ export function ParcelIntelExplorer({
                 aria-expanded={insightsOpen}
                 aria-controls="parcel-outcome-insights"
                 data-tool-panel-trigger="insights"
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-medium text-white hover:bg-white/15"
+                className="inline-flex h-11 items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 text-xs font-medium text-white hover:bg-white/15"
               >
                 <TrendingUp className="h-3.5 w-3.5 text-emerald-300" />
                 Outcome insights
