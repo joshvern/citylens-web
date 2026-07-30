@@ -126,7 +126,7 @@ test('clusters the citywide preview and converges borough URLs on one explorer',
   await expect(rankView).toHaveAttribute('aria-pressed', 'true');
   await expect(
     page.getByText(
-      'Only mapped parcels inside the current extent · unsaved scope',
+      /^[\d,]+ sites? across [\d,]+ mapped parcels? · unsaved scope$/,
     ),
   ).toBeVisible();
   await expect(rankView).toHaveText('Show all sites · 125');
