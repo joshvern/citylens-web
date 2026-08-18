@@ -76,7 +76,7 @@ export default function PricingPage() {
               'Paid pilots add guided rollout',
             ].map((item) => (
               <span key={item} className="inline-flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                <ShieldCheck className="h-3.5 w-3.5 text-slate-500" />
                 {item}
               </span>
             ))}
@@ -88,18 +88,12 @@ export default function PricingPage() {
         {plans.map((plan) => (
           <article
             key={plan.name}
-            className={`relative flex flex-col overflow-hidden rounded-3xl border p-6 shadow-[0_22px_65px_-48px_rgba(15,23,42,0.7)] ${
+            className={`relative flex flex-col overflow-hidden rounded-2xl border p-6 shadow-sm ${
               plan.featured
                 ? 'border-slate-800 bg-slate-950 text-white'
                 : 'border-slate-200 bg-white text-slate-950'
             }`}
           >
-            {plan.featured ? (
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-sky-500/20 blur-3xl"
-              />
-            ) : null}
             <div className="relative flex h-full flex-col">
               <div
                 className={`text-[11px] font-semibold uppercase tracking-[0.14em] ${
@@ -148,10 +142,10 @@ export default function PricingPage() {
               </ul>
               <Link
                 href={plan.href}
-                className={`mt-7 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${
+                className={`mt-7 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${
                   plan.featured
-                    ? 'bg-white text-slate-950 hover:-translate-y-0.5 hover:bg-sky-50'
-                    : 'border border-slate-300 bg-white text-slate-900 hover:-translate-y-0.5 hover:border-slate-400'
+                    ? 'bg-white text-slate-950 hover:bg-sky-50'
+                    : 'border border-slate-300 bg-white text-slate-900 hover:border-slate-400 hover:shadow-sm'
                 }`}
               >
                 {plan.cta}

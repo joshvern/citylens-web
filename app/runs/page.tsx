@@ -117,8 +117,7 @@ export default function RunsPage() {
           description="Track each imagery-to-evidence job from request through review."
         />
 
-        <section className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 p-6 text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.65)] sm:p-8">
-          <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-sky-500/20 blur-3xl" />
+        <section className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 p-6 text-white shadow-panel sm:p-8">
           <div className="relative grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
             <div>
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-sky-300">
@@ -181,7 +180,7 @@ export default function RunsPage() {
         actions={
           <Link
             href="/runs/new"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-950 bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm transition hover:border-slate-700 hover:bg-slate-800 hover:shadow-md"
           >
             <Plus className="h-4 w-4" />
             New run
@@ -216,7 +215,7 @@ export default function RunsPage() {
         <SummaryTile testId="run-summary-attention" label="Needs attention" value={failed} tone="rose" icon={AlertTriangle} />
       </section>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_18px_55px_-38px_rgba(15,23,42,0.4)]">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50/80 px-5 py-4">
           <div>
             <div className="text-sm font-semibold text-slate-950">Recent processing</div>
@@ -408,8 +407,7 @@ function RunsPageSkeleton() {
           </div>
         }
       />
-      <section className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 p-6 text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.65)] sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-sky-500/20 blur-3xl" />
+      <section className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 p-6 text-white shadow-panel sm:p-8">
         <div className="relative grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.65fr)] md:items-end">
           <div>
             <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-sky-300">

@@ -18,18 +18,9 @@ export function ProductPageHeader({
 }) {
   return (
     <header
-      className="relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f8fafc_58%,#eef8ff_100%)] px-5 py-6 shadow-[0_24px_70px_-54px_rgba(15,23,42,0.6)] sm:px-7 sm:py-7"
+      className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white px-5 py-6 shadow-sm sm:px-7 sm:py-7"
       data-testid="product-page-header"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-sky-300/20 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-24 left-1/3 h-52 w-52 rounded-full bg-emerald-300/10 blur-3xl"
-      />
-
       <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-sky-800">

@@ -39,10 +39,10 @@ function navigationClass(current: boolean, mobile: boolean): string {
         : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-950'
     }`;
   }
-  return `rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors ${
+  return `rounded-lg px-2.5 py-1.5 text-sm transition-colors ${
     current
-      ? 'bg-slate-100 text-slate-950'
-      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+      ? 'bg-slate-100 font-semibold text-slate-950'
+      : 'font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-950'
   }`;
 }
 
@@ -66,7 +66,7 @@ export function SiteHeader() {
               height={28}
               priority
             />
-            <span className="text-lg font-semibold tracking-[-0.02em]">
+            <span className="text-lg font-semibold tracking-tight">
               CityLens
             </span>
           </Link>
