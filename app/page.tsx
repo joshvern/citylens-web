@@ -54,9 +54,9 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col gap-10 pb-4">
       {/* ---------- Hero ---------- */}
-      <section className="relative overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-950 text-white shadow-[0_34px_100px_-48px_rgba(15,23,42,0.8)]">
+      <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-white shadow-panel">
         <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,165,233,0.16),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.13),transparent_32%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,165,233,0.14),transparent_38%)]"
           aria-hidden="true"
         />
         <div
@@ -89,7 +89,7 @@ export default async function HomePage() {
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
                 href="/parcel-intel"
-                className="group inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-slate-950 shadow-lg shadow-black/15 transition hover:-translate-y-0.5 hover:bg-sky-50"
+                className="group inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-sky-50"
               >
                 Open the NYC opportunity map
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -108,7 +108,7 @@ export default async function HomePage() {
                 'No black-box buy/pass score',
               ].map((item) => (
                 <span key={item} className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                  <ShieldCheck className="h-3.5 w-3.5 text-slate-400" />
                   {item}
                 </span>
               ))}
@@ -147,7 +147,6 @@ export default async function HomePage() {
         >
           <Step
             n={1}
-            accent="sky"
             icon={<MapPin className="h-4 w-4" />}
             title="Scan one citywide market"
             body="Rank current development-site leads across all five boroughs on one map."
@@ -160,20 +159,18 @@ export default async function HomePage() {
           />
           <Step
             n={2}
-            accent="amber"
             icon={<SearchCheck className="h-4 w-4" />}
             title="Open the current evidence"
             body="Keep historical rank separate from projects, capacity, ownership, constraints, and source dates."
             visual={
               <div className="font-mono text-[12px] text-slate-700">
-                <span className="text-amber-700">Rank</span>
+                <span className="text-slate-900">Rank</span>
                 <span className="text-slate-600"> ≠ seller intent</span>
               </div>
             }
           />
           <Step
             n={3}
-            accent="emerald"
             icon={<GitCompareArrows className="h-4 w-4" />}
             title="Compare before committing"
             body="Compare two or three parcels and export their source-dated evidence."
@@ -186,7 +183,6 @@ export default async function HomePage() {
           />
           <Step
             n={4}
-            accent="violet"
             icon={<Sparkles className="h-4 w-4" />}
             title="Advance with a reason"
             body="Save, assign, underwrite, pursue, or pass with a dated record."
@@ -284,17 +280,17 @@ export default async function HomePage() {
                 {'\n  '}
                 <span className="text-sky-300">&quot;kind&quot;</span>
                 <span className="text-slate-400">: </span>
-                <span className="text-amber-300">&quot;modified&quot;</span>
+                <span className="text-slate-100">&quot;modified&quot;</span>
                 <span className="text-slate-400">,</span>
                 {'\n  '}
                 <span className="text-sky-300">&quot;iou&quot;</span>
                 <span className="text-slate-400">: </span>
-                <span className="text-emerald-300">0.74</span>
+                <span className="text-slate-100">0.74</span>
                 <span className="text-slate-400">,</span>
                 {'\n  '}
                 <span className="text-sky-300">&quot;height_m&quot;</span>
                 <span className="text-slate-400">: </span>
-                <span className="text-emerald-300">12.4</span>
+                <span className="text-slate-100">12.4</span>
                 {'\n'}
                 <span className="text-slate-400">{'}'}</span>
               </code>
@@ -333,13 +329,9 @@ export default async function HomePage() {
 
       {/* ---------- Trust / provenance stripe ---------- */}
       <section className="relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-950 p-6 text-slate-100 shadow-sm md:p-8">
-        <div
-          className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-emerald-500/15 blur-3xl"
-          aria-hidden="true"
-        />
         <div className="relative grid grid-cols-1 gap-6 md:grid-cols-[1.1fr_2fr] md:items-center">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-300">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-300">
               Built for diligence
             </div>
             <h2 className="mt-1 text-2xl font-semibold tracking-tight text-white">
@@ -384,21 +376,17 @@ export default async function HomePage() {
       <section
         id="create"
         data-testid="home-closing-cta"
-        className="relative overflow-hidden rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm md:p-8"
+        className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 p-6 shadow-panel md:p-8"
       >
-        <div
-          className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-sky-300/30 blur-3xl"
-          aria-hidden="true"
-        />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="max-w-2xl">
-            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-700">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-300">
               Move from market to site
             </div>
-            <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">
+            <h2 className="mt-1 text-2xl font-semibold tracking-tight text-white">
               Start with the citywide shortlist. Escalate only the parcel that earns it.
             </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-700">
+            <p className="mt-2 text-sm leading-6 text-slate-300">
               Open the 5,000-lead workspace, or create dated aerial and 3D
               evidence for a specific NYC address.
             </p>
@@ -406,14 +394,14 @@ export default async function HomePage() {
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
             <Link
               href="/parcel-intel"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-sky-50"
             >
               Open parcel intelligence
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/runs/new"
-              className="inline-flex h-11 items-center justify-center rounded-lg border border-sky-300 bg-white px-5 text-sm font-semibold text-slate-950 transition hover:border-sky-400 hover:bg-sky-100"
+              className="inline-flex h-11 items-center justify-center rounded-lg border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/10"
             >
               Create site evidence
             </Link>
@@ -427,15 +415,15 @@ export default async function HomePage() {
 function AcquisitionWorkspacePreview() {
   const dots = [
     ['18%', '72%', 'bg-rose-400'],
-    ['25%', '61%', 'bg-amber-300'],
+    ['25%', '61%', 'bg-slate-400'],
     ['31%', '78%', 'bg-rose-400'],
     ['39%', '49%', 'bg-sky-300'],
     ['44%', '65%', 'bg-rose-400'],
-    ['49%', '34%', 'bg-amber-300'],
+    ['49%', '34%', 'bg-slate-400'],
     ['54%', '56%', 'bg-rose-400'],
     ['59%', '44%', 'bg-sky-300'],
     ['63%', '70%', 'bg-rose-400'],
-    ['68%', '27%', 'bg-amber-300'],
+    ['68%', '27%', 'bg-slate-400'],
     ['72%', '50%', 'bg-rose-400'],
     ['77%', '37%', 'bg-sky-300'],
     ['82%', '61%', 'bg-rose-400'],
@@ -524,7 +512,7 @@ function AcquisitionWorkspacePreview() {
             <PreviewMetric label="Current project gate" value="Passed" tone="emerald" />
             <PreviewMetric label="Unused floor area" value="5,000 sqft" />
             <PreviewMetric label="Ownership" value="Source-dated" />
-            <PreviewMetric label="Diligence" value="2 reviews" tone="amber" />
+            <PreviewMetric label="Diligence" value="2 reviews" />
           </div>
 
           <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
@@ -573,12 +561,11 @@ function PreviewMetric({
 }: {
   label: string;
   value: string;
-  tone?: 'slate' | 'emerald' | 'amber';
+  tone?: 'slate' | 'emerald';
 }) {
   const toneClass = {
     slate: 'bg-slate-50 text-slate-950 ring-slate-200',
     emerald: 'bg-emerald-50 text-emerald-950 ring-emerald-200',
-    amber: 'bg-amber-50 text-amber-950 ring-amber-200',
   }[tone];
   return (
     <div className={`rounded-lg p-2.5 ring-1 ring-inset ${toneClass}`}>
@@ -588,60 +575,29 @@ function PreviewMetric({
   );
 }
 
-// Color-accented feature card. The accent shows up as a left bar +
-// matching icon background, giving the three cards a clear visual
-// rhythm without leaving the slate-on-white palette.
-const ACCENTS = {
-  sky: {
-    bar: 'bg-sky-500',
-    iconBg: 'bg-sky-50 text-sky-700 ring-sky-200',
-    chipNum: 'bg-sky-50 text-sky-700 ring-sky-200',
-  },
-  amber: {
-    bar: 'bg-amber-500',
-    iconBg: 'bg-amber-50 text-amber-700 ring-amber-200',
-    chipNum: 'bg-amber-50 text-amber-700 ring-amber-200',
-  },
-  emerald: {
-    bar: 'bg-emerald-500',
-    iconBg: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-    chipNum: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  },
-  violet: {
-    bar: 'bg-violet-500',
-    iconBg: 'bg-violet-50 text-violet-700 ring-violet-200',
-    chipNum: 'bg-violet-50 text-violet-700 ring-violet-200',
-  },
-} as const;
-
+// One restrained treatment for every step card: white surface, slate
+// hairline border, a mono slate number chip, and a sky icon chip. No
+// per-card accent cycling.
 function Step({
   n,
-  accent,
   icon,
   title,
   body,
   visual,
 }: {
   n: number;
-  accent: keyof typeof ACCENTS;
   icon: React.ReactNode;
   title: string;
   body: string;
   visual: React.ReactNode;
 }) {
-  const a = ACCENTS[accent];
   return (
     <li className="relative flex snap-start flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <span className={`absolute inset-y-0 left-0 w-1 rounded-l-xl ${a.bar}`} aria-hidden="true" />
       <div className="flex items-center gap-2.5">
-        <span
-          className={`inline-flex h-7 w-7 items-center justify-center rounded-md font-mono text-xs font-semibold ring-1 ring-inset ${a.chipNum}`}
-        >
+        <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 font-mono text-xs font-semibold text-slate-700 ring-1 ring-inset ring-slate-200">
           {n}
         </span>
-        <span
-          className={`inline-flex h-7 w-7 items-center justify-center rounded-md ring-1 ring-inset ${a.iconBg}`}
-        >
+        <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-200">
           {icon}
         </span>
       </div>
@@ -675,7 +631,7 @@ function TrustCard({
 }) {
   return (
     <div className="snap-start rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm">
-      <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/30">
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-sky-400/10 text-sky-300 ring-1 ring-inset ring-sky-400/30">
         {icon}
       </span>
       <div className="mt-3 text-sm font-semibold text-white">{title}</div>

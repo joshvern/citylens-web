@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import '../styles/globals.css';
 
 import { SafeAnalytics } from '@/components/SafeAnalytics';
@@ -11,6 +12,18 @@ import { Toasts } from '@/components/Toasts';
 import { AuthProvider } from '@/lib/auth';
 import { AuthTokenBridge } from '@/lib/auth/AuthTokenBridge';
 import { publicAssetPath } from '@/lib/site';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 const title = 'CityLens';
 const description =
@@ -44,9 +57,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${jetBrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <body
-        className="flex min-h-screen flex-col bg-white text-slate-950"
+        className="flex min-h-screen flex-col bg-white text-slate-950 antialiased"
         suppressHydrationWarning
       >
         <AuthProvider>

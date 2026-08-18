@@ -85,7 +85,7 @@ export function NewRunWorkspace() {
                 Status tracked in Runs
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <Database className="h-3.5 w-3.5 text-violet-600" />
+                <Database className="h-3.5 w-3.5 text-sky-600" />
                 Source and QA receipt included
               </span>
             </div>
@@ -96,9 +96,8 @@ export function NewRunWorkspace() {
       {!signedIn ? (
         <section
           data-testid="new-run-access-gate"
-          className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 p-6 text-white shadow-[0_24px_70px_-36px_rgba(15,23,42,0.65)] sm:p-8"
+          className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 p-6 text-white shadow-panel sm:p-8"
         >
-          <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-sky-500/20 blur-3xl" />
           <div className="relative grid gap-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
             <div>
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-sky-300">
@@ -141,7 +140,7 @@ export function NewRunWorkspace() {
       ) : (
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] lg:items-start">
           <section
-            className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_18px_55px_-38px_rgba(15,23,42,0.4)] sm:p-7"
+            className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
             aria-labelledby="new-run-request-heading"
           >
             <div className="mb-5 border-b border-slate-200 pb-4">
@@ -186,7 +185,7 @@ export function NewRunWorkspace() {
             />
           </section>
 
-          <aside className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 text-white shadow-[0_18px_55px_-38px_rgba(15,23,42,0.55)] lg:sticky lg:top-24">
+          <aside className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 text-white shadow-panel lg:sticky lg:top-24">
             <div className="border-b border-white/10 px-5 py-5">
               <div className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-300">
                 Evidence package

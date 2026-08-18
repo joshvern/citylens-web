@@ -73,29 +73,22 @@ export function FeaturedDemoCards({
         className="mt-4 grid snap-x snap-mandatory auto-cols-[86%] grid-flow-col gap-4 overflow-x-auto pb-2 md:mt-6 md:grid-flow-row md:grid-cols-2 md:overflow-visible md:pb-0 lg:grid-cols-3"
         data-testid="featured-demo-strip"
       >
-        {demos.slice(0, limit).map((demo, index) => {
+        {demos.slice(0, limit).map((demo) => {
           const id = demoId(demo);
           if (!id) return null;
-          return <DemoCard key={id} demo={demo} runId={id} index={index} />;
+          return <DemoCard key={id} demo={demo} runId={id} />;
         })}
       </div>
     </section>
   );
 }
 
-// Cycled through the demo grid so the section reads as a kit alongside
-// the home-page feature cards (which use the same sky/amber/emerald
-// palette).
-const DEMO_ACCENTS = ['bg-sky-500', 'bg-amber-500', 'bg-emerald-500'] as const;
-
 function DemoCard({
   demo,
   runId,
-  index,
 }: {
   demo: DemoFeaturedRun;
   runId: string;
-  index: number;
 }) {
   const title = demoTitle(demo, runId);
   const address = typeof demo.address === 'string' ? demo.address : null;
@@ -104,15 +97,13 @@ function DemoCard({
   const outputs = Array.isArray(demo.outputs)
     ? demo.outputs.filter((o): o is string => typeof o === 'string')
     : [];
-  const accent = DEMO_ACCENTS[index % DEMO_ACCENTS.length];
 
   return (
     <Link
       href={`/runs/${encodeURIComponent(runId)}?demo=1`}
-      className="group relative flex snap-start flex-col gap-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-4 pl-5 transition-all hover:border-slate-300 hover:bg-white hover:shadow-sm"
+      className="group flex snap-start flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors hover:border-slate-300 hover:bg-white hover:shadow-sm"
       data-testid="featured-demo-card"
     >
-      <span className={`absolute inset-y-0 left-0 w-1 ${accent}`} aria-hidden="true" />
       <div className="flex items-start justify-between gap-3">
         <div className="text-sm font-semibold text-slate-900">{title}</div>
         <ArrowRight className="h-4 w-4 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-700" />
