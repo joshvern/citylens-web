@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test-fixtures';
 import { expectOpenStreetMapBasemap, mockBasemapTiles } from './basemap';
 
 const BOROUGH_CENTERS = {
