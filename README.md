@@ -487,6 +487,22 @@ mounting every heavy renderer in a long page. The selector reports artifact
 availability, supports arrow/Home/End keyboard navigation, and loads map/mesh
 resources only when their view is opened.
 
+Both the parcel explorer and GeoJSON artifact view use the shared
+`OpenStreetMapBasemap` component. It requests standard OpenStreetMap raster
+tiles directly from `https://tile.openstreetmap.org/{z}/{x}/{y}.png`, requires no
+map-service API key, and keeps linked contributor attribution visible. Tile
+requests stop at native zoom 19 and use normal browser caching and referrers;
+do not add bulk downloads or prefetching. See the
+[OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/).
+The previous unauthenticated CARTO endpoint now returns an API-key watermark
+inside HTTP 200 images, so HTTP success alone does not establish map health.
+Map E2E tests intercept tiles and verify provider requests, decoded images,
+and attribution. Scheduled authenticated and public-shell browser checks also
+intercept tiles for all desktop/mobile pages and explicitly report them as
+mocked, so automated navigation does not load public tile servers. Their
+API and application checks remain live. Verify real basemap imagery manually
+after deployment; automated receipts do not establish provider availability.
+
 ## Privacy-preserving adoption measurement
 
 Authenticated Parcel Intelligence interactions send only the strict
