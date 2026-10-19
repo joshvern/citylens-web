@@ -6,6 +6,7 @@ import { usePathname, useSelectedLayoutSegments } from 'next/navigation';
 
 import { AuthHeaderControls } from '@/components/AuthHeaderControls';
 import { PlanQuotaBadge } from '@/components/PlanQuotaBadge';
+import { isParcelWorkspaceRoute } from '@/components/SiteMain';
 
 const navigation = [
   { href: '/', label: 'Home' },
@@ -68,7 +69,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-[1000] h-[52px] shrink-0 border-b border-rule bg-white">
       <div
         className={`flex h-full w-full items-center gap-2 lg:gap-6 ${
-          pathname === '/parcel-intel' || pathname?.startsWith('/parcel-intel/')
+          isParcelWorkspaceRoute(segments)
             ? 'px-3.5 sm:px-5'
             : 'mx-auto max-w-6xl px-4'
         }`}

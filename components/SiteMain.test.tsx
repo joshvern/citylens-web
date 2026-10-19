@@ -2,11 +2,13 @@ import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const navigation = vi.hoisted(() => ({
-  pathname: '/',
+  pathname: '/' as string | null,
+  segments: [] as string[],
 }));
 
 vi.mock('next/navigation', () => ({
   usePathname: () => navigation.pathname,
+  useSelectedLayoutSegments: () => navigation.segments,
 }));
 
 import { SiteFooterBoundary, SiteMain } from './SiteMain';
@@ -14,10 +16,12 @@ import { SiteFooterBoundary, SiteMain } from './SiteMain';
 describe('SiteMain', () => {
   beforeEach(() => {
     navigation.pathname = '/';
+    navigation.segments = [];
   });
 
   it('uses the standard content measure by default', () => {
     navigation.pathname = '/pricing';
+    navigation.segments = ['pricing'];
     render(<SiteMain>Pricing</SiteMain>);
 
     const main = screen.getByRole('main');
@@ -27,6 +31,8 @@ describe('SiteMain', () => {
   });
 
   it('lets the homepage lay out its own full-width dateline and column', () => {
+    // ISR background regeneration renders this with usePathname() === null.
+    navigation.pathname = null;
     render(<SiteMain>Home</SiteMain>);
 
     const main = screen.getByRole('main');
@@ -37,6 +43,7 @@ describe('SiteMain', () => {
 
   it('gives the parcel workspace its full decision-canvas width', () => {
     navigation.pathname = '/parcel-intel';
+    navigation.segments = ['parcel-intel'];
     render(<SiteMain>Parcels</SiteMain>);
 
     expect(screen.getByRole('main')).toHaveClass('ws-tabular');
@@ -50,6 +57,7 @@ describe('SiteMain', () => {
     expect(screen.getByRole('contentinfo')).toBeInTheDocument();
 
     navigation.pathname = '/parcel-intel';
+    navigation.segments = ['parcel-intel'];
     rerender(<SiteFooterBoundary><footer>Site links</footer></SiteFooterBoundary>);
     expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument();
   });

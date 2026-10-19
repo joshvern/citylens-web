@@ -1,14 +1,20 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
+import { useSelectedLayoutSegments } from 'next/navigation';
+
+// Route checks use layout segments, not usePathname(): during ISR background
+// regeneration usePathname() is null in this root-layout client component, and
+// a wrong server class survives hydration.
+export function isParcelWorkspaceRoute(segments: string[]): boolean {
+  return segments[0] === 'parcel-intel';
+}
 
 export function SiteMain({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const isParcelWorkspace =
-    pathname === '/parcel-intel' || pathname?.startsWith('/parcel-intel/');
+  const segments = useSelectedLayoutSegments();
+  const isParcelWorkspace = isParcelWorkspaceRoute(segments);
   // The homepage lays out its own full-width dateline and column.
-  const isHome = pathname === '/';
+  const isHome = segments.length === 0;
 
   return (
     <main
@@ -28,8 +34,8 @@ export function SiteMain({ children }: { children: ReactNode }) {
 }
 
 export function SiteFooterBoundary({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  if (pathname === '/parcel-intel' || pathname?.startsWith('/parcel-intel/')) {
+  const segments = useSelectedLayoutSegments();
+  if (isParcelWorkspaceRoute(segments)) {
     return null;
   }
   return children;
