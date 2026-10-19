@@ -5,7 +5,6 @@ import {
   CircleMarker,
   GeoJSON,
   MapContainer,
-  TileLayer,
   Tooltip,
   useMap,
   useMapEvents,
@@ -18,6 +17,7 @@ import {
 import type { BBox, GeoJsonObject } from 'geojson';
 import { parcelLabel } from '@/lib/parcel-format';
 import type { ParcelIntelRow } from '@/lib/api';
+import { OpenStreetMapBasemap } from '@/components/OpenStreetMapBasemap';
 import {
   BOROUGH_COLORS,
   BOROUGH_LABELS,
@@ -320,13 +320,7 @@ export function ParcelIntelExplorerMap({
         className="h-full w-full"
         style={{ height: '100%', width: '100%', zIndex: 0 }}
       >
-        <TileLayer
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-          maxZoom={19}
-          updateWhenIdle
-          keepBuffer={1}
-        />
+        <OpenStreetMapBasemap />
         <ExplorerMapView rows={mappable} selectedBbl={selectedBbl} />
         <MapViewportObserver onChange={handleViewportChange} />
         {selectedGeometry && (
