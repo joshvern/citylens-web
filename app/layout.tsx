@@ -98,7 +98,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 function SiteFooter() {
   return (
     <footer className="mt-12 border-t border-rule bg-paper-2">
-      <div className="mx-auto flex max-w-[1480px] flex-col gap-4 px-4 py-6 text-sm text-ink-2 sm:px-6 lg:flex-row lg:items-center lg:justify-between xl:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 text-sm text-ink-2 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="inline-flex items-center gap-[9px] text-ink">
             <CityLensMark className="h-[18px] w-[18px]" />
@@ -148,7 +148,7 @@ function SiteFooter() {
         </nav>
       </div>
       <div className="border-t border-rule">
-        <div className="mx-auto max-w-[1480px] px-4 py-3 text-xs leading-5 text-ink-3 sm:px-6 xl:px-8">
+        <div className="mx-auto max-w-6xl px-4 py-3 text-xs leading-5 text-ink-3">
           CityLens supports screening and workflow. It is not legal, zoning,
           appraisal, brokerage or investment advice. &copy;{' '}
           {new Date().getFullYear()} CityLens.

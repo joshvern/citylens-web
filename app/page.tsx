@@ -29,21 +29,27 @@ export default async function HomePage() {
   const total = finite(gateCount) ? gateCount : boroughCount;
   const inventory = parcel.inventory;
   const count = (n: number) => n.toLocaleString('en-US');
+  const stale = past.length + unchecked.length;
   return <div className="bg-paper text-ink">
-    <div aria-label="Feed dateline" data-testid="home-feed-dateline" className="flex flex-wrap gap-x-6 gap-y-1 border-b border-rule bg-paper-2 px-4 py-2 text-xs text-ink-2">
-      <span>Feed published <b className="font-semibold text-ink">{dateLabel(parcel.index?.generated_at)}</b></span>
-      <span className="ws-tabular">{total !== null ? `${count(total)} ranked parcels` : 'Ranked-parcel count unavailable'}</span>
-      <span className="ws-tabular">{checked.length ? `${checked.length} public sources checked` : 'Source receipt unavailable'}</span>
-      {!!past.length && <span className="text-stale">Past freshness limit: {past.map(source => source.source).join(', ')}</span>}
-      {!!unchecked.length && <span className="text-stale">Unchecked: {unchecked.map(source => source.source).join(', ')}</span>}
-      {!!checked.length && <span className="font-mono">Ages as of {dateLabel(checkedAt)}</span>}
+    <div aria-label="Feed dateline" data-testid="home-feed-dateline" className="border-b border-rule bg-paper-2">
+      <p className="ws-tabular mx-auto flex max-w-6xl flex-wrap gap-x-5 gap-y-1 px-4 py-2 text-[13px] leading-5 text-ink-2">
+        <span>Feed of <b className="font-semibold text-ink">{dateLabel(parcel.index?.generated_at)}</b></span>
+        <span>{total !== null ? `${count(total)} ranked parcels` : 'Ranked-parcel count unavailable'}</span>
+        <span>{checked.length ? `${checked.length} public sources` : 'Source receipt unavailable'}</span>
+        {stale > 0 && <a href="#sources-heading" className="text-stale underline decoration-stale/40 underline-offset-2 hover:decoration-stale">{past.length ? `${past.length} past ${past.length === 1 ? 'its' : 'their'} freshness limit` : ''}{past.length && unchecked.length ? ', ' : ''}{unchecked.length ? `${unchecked.length} unchecked` : ''}</a>}
+      </p>
     </div>
-    <section className="grid items-end gap-5 py-8 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:py-10">
-      <h1 className="max-w-[21ch] text-[32px] font-extrabold leading-[1.04] tracking-[-0.028em] text-balance sm:text-[44px]">Every tax lot in New York City, ranked for redevelopment.</h1>
-      <div><p className="max-w-[52ch] text-base leading-7 text-ink-2">CityLens ranks the city&apos;s lots on zoning headroom, ownership, sales and permit history, and shows the public records behind each rank.{parcel.lots.length ? ' Here is the current number one.' : ''}</p><div className="mt-5 flex flex-wrap items-center gap-4"><Link href="/parcel-intel" className="inline-flex min-h-11 items-center justify-center rounded-sm bg-ink px-5 py-3 text-sm font-semibold text-white">Open the parcel map</Link><p className="max-w-[32ch] text-xs leading-5 text-ink-3">{inventory && finite(inventory.returned_count) && finite(inventory.available_count) ? `Public preview: ${count(inventory.returned_count)} of ${count(inventory.available_count)} ranked parcels, no account needed.` : 'Public preview available without an account. Live inventory counts are temporarily unavailable.'}</p></div></div>
+    <div className="mx-auto max-w-6xl px-4 pb-6">
+    <section className="pb-9 pt-10 lg:pb-12 lg:pt-14">
+      <h1 className="text-[34px] font-extrabold leading-[1.03] tracking-[-0.03em] text-balance sm:text-[48px] lg:text-[60px]">Every tax lot in New York City, ranked for redevelopment.</h1>
+      <div className="mt-6 grid gap-5 lg:mt-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-12">
+        <p className="max-w-[60ch] text-pretty text-base leading-7 text-ink-2 sm:text-lg sm:leading-8">CityLens ranks the city&apos;s lots on zoning headroom, ownership, sales and permit history, and shows the public records behind each rank.{parcel.lots.length ? ' Here is the current number one.' : ''}</p>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 lg:flex-col lg:items-start"><Link href="/parcel-intel" className="inline-flex min-h-11 items-center justify-center rounded-sm bg-ink px-5 py-3 text-sm font-semibold text-white hover:bg-ink-2">Open the parcel map</Link><p className="max-w-[34ch] text-xs leading-5 text-ink-3">{inventory && finite(inventory.returned_count) && finite(inventory.available_count) ? `Public preview: ${count(inventory.returned_count)} of ${count(inventory.available_count)} ranked parcels, no account needed.` : 'Public preview available without an account. Live inventory counts are temporarily unavailable.'}</p></div>
+      </div>
     </section>
     <CaseFile lots={parcel.lots} total={total ?? inventory?.available_count ?? null} sources={sources} />
     <HomeEvidence initialDemos={featured} initialSummary={summary}><Sources sources={sources} checkedAt={checkedAt} /></HomeEvidence>
+    </div>
 
   </div>;
 }

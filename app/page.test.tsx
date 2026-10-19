@@ -40,7 +40,9 @@ describe('HomePage', () => {
     expect(site.getByRole('link', { name: 'Open this site in the workspace' })).toHaveAttribute('href', '/parcel-intel?bbl=4000010001');
     expect(site.getByRole('img', { name: /2024 aerial survey/ }).getAttribute('src')).toContain('bboxSR=3857');
     expect(screen.getByRole('table', { name: 'Public source freshness receipt' })).toHaveTextContent('Past limit');
-    expect(screen.getByText(/Past freshness limit: NYC DOB/)).toHaveClass('text-stale');
+    const staleLink = within(screen.getByTestId('home-feed-dateline')).getByRole('link', { name: /past (its|their) freshness limit/ });
+    expect(staleLink).toHaveClass('text-stale');
+    expect(staleLink).toHaveAttribute('href', '#sources-heading');
     expect(screen.queryByText(/PRIVATE OWNER/)).not.toBeInTheDocument();
   });
   it('uses the featured preview and model summary counts without a baseline slider', async () => {

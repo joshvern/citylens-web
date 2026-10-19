@@ -17,11 +17,21 @@ describe('SiteMain', () => {
   });
 
   it('uses the standard content measure by default', () => {
-    render(<SiteMain>Home</SiteMain>);
+    navigation.pathname = '/pricing';
+    render(<SiteMain>Pricing</SiteMain>);
 
     const main = screen.getByRole('main');
     expect(main).toHaveAttribute('id', 'main-content');
     expect(main).toHaveClass('max-w-6xl');
+    expect(main).not.toHaveClass('ws-tabular');
+  });
+
+  it('lets the homepage lay out its own full-width dateline and column', () => {
+    render(<SiteMain>Home</SiteMain>);
+
+    const main = screen.getByRole('main');
+    expect(main).toHaveAttribute('id', 'main-content');
+    expect(main).not.toHaveClass('max-w-6xl');
     expect(main).not.toHaveClass('ws-tabular');
   });
 
