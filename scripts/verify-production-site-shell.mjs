@@ -24,13 +24,13 @@ const routes = [
   {
     name: 'runs',
     path: '/runs',
-    current: 'Runs',
+    current: 'Site evidence',
     requiredTestId: 'public-evidence-library',
   },
   {
     name: 'new-run',
     path: '/runs/new',
-    current: 'Runs',
+    current: 'Site evidence',
     requiredTestId: 'new-run-access-gate',
   },
   { name: 'pricing', path: '/pricing', current: 'Pricing' },
@@ -127,7 +127,14 @@ try {
       });
       const main = page.getByRole('main');
       const mainBounds = await main.boundingBox();
-      const footerBounds = await page.locator('footer').boundingBox();
+      const footerExpected = route.name !== 'parcels';
+      const footerCount = await page.locator('footer').count();
+      const footerBounds = footerCount > 0
+        ? await page.locator('footer').boundingBox()
+        : null;
+      if (viewport.name !== 'desktop') {
+        await page.getByLabel('Open navigation', { exact: true }).click();
+      }
       const primaryNavigation =
         viewport.name === 'desktop'
           ? page.getByRole('navigation', { name: 'Primary navigation' })
@@ -137,6 +144,9 @@ try {
       const currentLabels = await primaryNavigation
         .locator('[aria-current="page"]')
         .allTextContents();
+      if (viewport.name !== 'desktop') {
+        await page.getByLabel('Open navigation', { exact: true }).click();
+      }
       const requiredSurfaceCount = route.requiredTestId
         ? await page.getByTestId(route.requiredTestId).count()
         : null;
@@ -184,6 +194,8 @@ try {
           docsDisclosureReceipt?.open_section_count ?? null,
         public_evidence_card_count: publicEvidenceReceipt?.card_count ?? null,
         public_evidence_first_href: publicEvidenceReceipt?.first_href ?? null,
+        footer_expected: footerExpected,
+        footer_count: footerCount,
         footer_bottom_px: footerBounds
           ? Math.round(footerBounds.y + footerBounds.height)
           : null,
@@ -206,8 +218,10 @@ try {
         (route.requiredTestId === undefined ||
           receipt.required_surface_count === 1) &&
         receipt.body_width_px <= viewport.width &&
-        receipt.footer_bottom_px !== null &&
-        receipt.footer_bottom_px >= viewport.height &&
+        (footerExpected
+          ? receipt.footer_bottom_px !== null &&
+            receipt.footer_bottom_px >= viewport.height
+          : footerCount === 0) &&
         receipt.console_error_count === 0 &&
         receipt.page_error_count === 0 &&
         (route.name !== 'home' ||
@@ -283,7 +297,7 @@ try {
 }
 
 const report = {
-  schema_version: 'citylens/production-site-shell@v4',
+  schema_version: 'citylens/production-site-shell@v5',
   verified_at: new Date().toISOString(),
   web_base: webBase,
   passed: failure === null,

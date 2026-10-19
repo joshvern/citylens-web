@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test-fixtures';
 
 async function expectMeshState(page: Page) {
   await page.getByTestId('artifact-tab-mesh').click();
