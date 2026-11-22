@@ -438,11 +438,29 @@ test('lets a first-session user watch the verified citywide screen', async ({
     });
   });
 
+  const inventoryStarted = performance.now();
   await page.goto('/parcel-intel');
 
   await expect(page.getByTestId('parcel-map-inventory-scope')).toHaveText(
     '5,000 of 5,000 ranked parcels shown · full inventory',
   );
+  const inventoryReadyMs = performance.now() - inventoryStarted;
+  await test.info().attach('full-inventory-baseline.json', {
+    body: JSON.stringify({
+      schema: 'citylens/browser-baseline@v1',
+      scenario: 'mock-auth-full-inventory',
+      rows: rows.length,
+      inventoryReadyMs,
+      browser: page.context().browser()?.version(),
+      viewport: page.viewportSize(),
+      platform: process.platform,
+      architecture: process.arch,
+      node: process.version,
+      ci: Boolean(process.env.CI),
+      claim: 'Navigation to verified inventory label; mocked API and tiles. Not field latency or map paint time.',
+    }, null, 2),
+    contentType: 'application/json',
+  });
   const guide = page.getByTestId('activation-guide-empty');
   await expect(guide).toContainText(
     'Open a lead or watch this exact screen.',

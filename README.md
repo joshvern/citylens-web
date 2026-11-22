@@ -1,5 +1,112 @@
 # citylens-web
 
+CityLens is an NYC acquisition research workspace built with Next.js, React,
+TypeScript and Leaflet. It connects parcel screening, source evidence,
+comparison and private diligence workflows.
+
+## Engineering review guide
+
+Start with these boundaries when reviewing the implementation:
+
+| Concern | Implementation and evidence |
+| --- | --- |
+| Public versus private data | `lib/api.server.ts`, `lib/api.ts`, and their tests; public SSR and authenticated browser inventory have different access contracts. |
+| Safe cross-route state | `lib/run-prefill.ts` and its tests; parcel handoff expires, is consumed once, and avoids sensitive URL parameters. |
+| Evidence interpretation | `lib/parcel-intel-metrics.ts`; historical ranking evidence is distinct from current acquisition eligibility. |
+| Accessible user journeys | `tests/e2e/accessibility.ts` and browser specs; mocked APIs make local journeys reproducible. |
+| Operational verification | `.github/workflows/production-shell-smoke.yml` and `production-auth-smoke.yml`; deployed checks exercise dependencies beyond fixture-based CI. |
+
+Run `npm ci`, `npm run lint`, `npm run build`, `npm test`, and
+`npm run test:e2e` for the repository checks. See `playwright.config.ts`
+for fixture and mock-auth settings. CI has read-only repository permissions,
+a 30-minute limit, cancels superseded runs, and retains browser failure
+screenshots/traces for 14 days. These artifacts use mocked test journeys;
+production diagnostics have separate workflows and handling.
+
+The 5,000-row first-session browser journey attaches
+`full-inventory-baseline.json` with navigation-to-inventory readiness time,
+browser version, viewport, platform and runtime. It uses mocked APIs and tiles.
+Collect repeated runs on the same runner before setting a regression budget;
+this measurement does not represent real-user latency or completed map paint.
+
+### Operational review — November 22, 2026
+
+The public shell monitor passed, but production is not fully healthy:
+
+- [API smoke](https://github.com/joshvern/citylens-engine/actions/runs/45054737088)
+  reports a 47.9-day-old feed and multiple expired source SLAs.
+- [Live project audit](https://github.com/joshvern/citylens-parcel-intel/issues/76)
+  reports 13 published DOB project leaks and a changed ZAP source snapshot.
+  Recovery requires authoritative source refresh, full publisher quality gates,
+  atomic publication and passing deployed checks. Increasing age limits would
+  conceal the problem.
+- [Adoption reporting](https://github.com/joshvern/citylens-engine/actions/runs/45029510883)
+  cannot fetch the pinned private core dependency: HTTPS Git authentication is
+  missing. Restore scoped dependency access before interpreting adoption data.
+- [Authenticated browser smoke](https://github.com/joshvern/citylens-web/actions/runs/45056516485)
+  timed out waiting for sales comparables readiness. Earlier same-day runs
+  passed; the underlying request and console error need investigation before
+  classifying this as a frontend regression or a transient dependency failure.
+
+Recovery attempt later that day:
+
+- The full governed refresh stopped on HTTP 403 from the official DOB ECB
+  aggregate query (`6bgk-3dad`). No replacement feed was published. Source
+  availability must be restored before rerunning all publication gates.
+- [Authenticated rerun](https://github.com/joshvern/citylens-web/actions/runs/45071698221)
+  passed. Treat sale-context availability as intermittent until its underlying
+  source/request failure is identified. The monitor now reports HTTP status
+  explicitly without including private request URLs or response bodies.
+- [Engine reporting fix](https://github.com/joshvern/citylens-engine/pull/163)
+  separates the locked Firestore reporting environment from the private core.
+  Local production aggregation succeeded: zero active users/user-days in the
+  default 30-day window; activation remains collecting. This is aggregate
+  evidence, not a customer interview or a product-quality measure.
+- Engine CI still requires scoped private-core access and dependency security
+  updates. Production Google federation rejects feature branches as designed;
+  verify the scheduled report after a reviewed default-branch release.
+
+Operational ownership remains with the project maintainer. Recovery is complete
+only when fresh source receipts, zero project leaks, a validated atomic feed
+publication, and deployed API/browser checks all pass. Keep the previous
+generation available for rollback and inspect the generation-diff report before
+activation. Do not change freshness limits to close the incident.
+
+### Product direction and engineering priorities
+
+Research checked November 22, 2026; vendor statements describe advertised
+capabilities, not independently measured quality.
+
+| Competitor | Advertised strength | CityLens response |
+| --- | --- | --- |
+| [TestFit](https://www.testfit.io/product/site-solver) | Generative site layouts, constraints and pro forma evaluation | Make the qualified shortlist and evidence handoff useful before detailed site design. |
+| [Reonomy](https://www.reonomy.com/pricing/) | Broad US commercial property and ownership intelligence | Compete on deep NYC source interpretation and freshness rather than national coverage. |
+| [Deepblocks](https://deepblocks.com/) | Citywide parcel search, ranking, zoning and development potential | Search and ranking alone are insufficient differentiation; validate the value of dated evidence and ongoing decision tracking. |
+
+The proposed wedge is a dependable weekly NYC acquisition review: explain
+what changed, expose source limitations, and preserve the team's diligence
+decision. This remains a hypothesis until practitioners repeatedly use it.
+
+Priority order:
+
+1. Restore source freshness and project exclusions; pass API and authenticated
+   browser checks against the newly published generation.
+2. Observe at least three acquisition practitioners completing scan → compare
+   → diligence. Measure time to a defensible shortlist, return use, and reasons
+   leads are rejected. Establish a baseline before setting improvement claims.
+3. Benchmark full-inventory interaction latency and memory on a documented
+   device/browser profile; use measured regressions to establish CI budgets.
+4. Record architecture decisions with alternatives, constraints and measured
+   outcomes. Include an incident review for the source-refresh lapse, with a
+   named operational owner and a verified recovery procedure.
+
+For a principal-engineering portfolio, the strongest evidence is a reviewable
+chain from product constraint to architectural decision to production outcome.
+This repository demonstrates several useful boundaries; operational recovery,
+performance measurements and customer outcomes still need evidence.
+
+## Product behavior
+
 The public homepage is acquisition-first: it presents CityLens as one
 five-borough decision flow from market scan to parcel evidence, shortlist
 comparison, and private workflow. The historical ranking, current eligibility
