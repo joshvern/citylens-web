@@ -1149,9 +1149,21 @@ try {
   const salesComparables = officialDossier.getByTestId(
     'parcel-sales-comparables',
   );
-  await salesComparables
-    .getByRole('button', { name: 'Load sale context' })
-    .click();
+  // Capture the request outcome before waiting for rendered content. Report
+  // only its status: URLs and bodies may contain private parcel context.
+  const saleContextResponse = page.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname.endsWith('/sales-comparables') &&
+      response.request().method() === 'GET',
+    { timeout: 20_000 },
+  );
+  const [saleResponse] = await Promise.all([
+    saleContextResponse,
+    salesComparables.getByRole('button', { name: 'Load sale context' }).click(),
+  ]);
+  if (!saleResponse.ok()) {
+    throw new Error(`Sale context API returned HTTP ${saleResponse.status()}.`);
+  }
   const salesComparablesReady = salesComparables.getByTestId(
     'parcel-sales-comparables-ready',
   );

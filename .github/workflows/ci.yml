@@ -10,9 +10,17 @@ on:
       - master
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     # The homepage SSR fetches /v1/demo/featured at build time (ISR
     # prerender). In CI, that fetch would either bake stale prod data
     # into the static HTML (breaking e2e mocks) or hit a quota. Disable
@@ -48,3 +56,12 @@ jobs:
       - run: npm test
 
       - run: npm run test:e2e
+
+      - name: Preserve browser diagnostics and performance baseline
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: browser-evidence
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 14
