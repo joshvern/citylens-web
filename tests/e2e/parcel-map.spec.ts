@@ -445,8 +445,9 @@ test('lets a first-session user watch the verified citywide screen', async ({
     '5,000 of 5,000 ranked parcels shown · full inventory',
   );
   const inventoryReadyMs = performance.now() - inventoryStarted;
-  await test.info().attach('full-inventory-baseline.json', {
-    body: JSON.stringify({
+  const baselinePath = test.info().outputPath('full-inventory-baseline.json');
+  await fs.mkdir(test.info().outputDir, { recursive: true });
+  await fs.writeFile(baselinePath, JSON.stringify({
       schema: 'citylens/browser-baseline@v1',
       scenario: 'mock-auth-full-inventory',
       rows: rows.length,
@@ -458,7 +459,9 @@ test('lets a first-session user watch the verified citywide screen', async ({
       node: process.version,
       ci: Boolean(process.env.CI),
       claim: 'Navigation to verified inventory label; mocked API and tiles. Not field latency or map paint time.',
-    }, null, 2),
+    }, null, 2));
+  await test.info().attach('full-inventory-baseline.json', {
+    path: baselinePath,
     contentType: 'application/json',
   });
   const guide = page.getByTestId('activation-guide-empty');
